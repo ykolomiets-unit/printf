@@ -16,4 +16,5 @@ TEST_TEAR_DOWN(ft_printf)
 
 TEST(ft_printf, test)
 {
+	TEST_ASSERT_EQUAL_INT(0, ft_printf("abc"));
 }

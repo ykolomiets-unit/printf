@@ -1,10 +1,10 @@
-TARGET_EXEC :=			libftprintf.a
+TARGET_LIB :=			libftprintf.a
 
 SRC_DIR :=				./src
 LIB_DIR :=				./lib
 OBJ_DIR :=				./obj
 
-INC_DIRS :=				./include						\
+INC_DIRS :=				./include					\
 
 HEADERS :=				ft_printf.h					\
 
@@ -45,10 +45,10 @@ CC_FLAGS :=				-Wall
 CC_FLAGS +=				-Wextra
 CC_FLAGS +=				-Werror
 
-all: $(TARGET_EXEC)
+all: $(TARGET_LIB)
 
-$(TARGET_EXEC): $(OBJS)
-	ar rucs $(TARGET_EXEC) $(OBJS)
+$(TARGET_LIB): $(OBJS)
+	ar rucs $(TARGET_LIB) $(OBJS)
 
 $(OBJS): | $(OBJ_DIR)
 
@@ -62,8 +62,8 @@ test: $(TEST_EXEC)
 	clear
 	./$(TEST_EXEC)
 
-$(TEST_EXEC): $(TEST_OBJS) $(OBJS)
-	$(CC) $(TEST_OBJS) $(OBJS) -o $(TEST_EXEC) 
+$(TEST_EXEC): $(TARGET_LIB) $(TEST_OBJS)
+	$(CC) $(TEST_OBJS) $(TARGET_LIB) -o $(TEST_EXEC) 
 
 $(TEST_OBJS): | $(TEST_OBJ_DIR)
 
@@ -78,7 +78,7 @@ clean:
 	rm -f $(TEST_OBJS)
 
 fclean: clean
-	rm -f $(TARGET_EXEC)
+	rm -f $(TARGET_LIB)
 	rm -f $(TEST_EXEC)
 	rm -rf $(OBJ_DIR)
 	rm -rf $(TEST_OBJ_DIR)
