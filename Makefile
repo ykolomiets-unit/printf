@@ -1,4 +1,4 @@
-TARGET_EXEC :=			LedDriver
+TARGET_EXEC :=			libftprintf.a
 
 SRC_DIR :=				./src
 LIB_DIR :=				./lib
@@ -45,6 +45,19 @@ CC_FLAGS :=				-Wall
 CC_FLAGS +=				-Wextra
 CC_FLAGS +=				-Werror
 
+all: $(TARGET_EXEC)
+
+$(TARGET_EXEC): $(OBJS)
+	ar rucs $(TARGET_EXEC) $(OBJS)
+
+$(OBJS): | $(OBJ_DIR)
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR)/%.o: %.c
+	$(CC) -c $< -o $@ $(CC_FLAGS) $(INC_FLAGS)
+
 test: $(TEST_EXEC)
 	clear
 	./$(TEST_EXEC)
@@ -60,17 +73,6 @@ $(TEST_OBJ_DIR):
 $(TEST_OBJ_DIR)/%.o: %.c
 	$(CC) -c $< -o $@ $(CC_FLAGS) $(UNITY_FLAGS) $(TEST_INC_FLAGS) $(INC_FLAGS)
 
-$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $(TARGET_EXEC) 
-
-$(OBJS): | $(OBJ_DIR)
-
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
-
-$(OBJ_DIR)/%.o: %.c
-	$(CC) -c $< -o $@ $(CC_FLAGS) $(INC_FLAGS)
-
 clean:
 	rm -f $(OBJS)		
 	rm -f $(TEST_OBJS)
@@ -81,6 +83,6 @@ fclean: clean
 	rm -rf $(OBJ_DIR)
 	rm -rf $(TEST_OBJ_DIR)
 
-.PHONY: test clean fclean
+.PHONY: all test clean fclean
 
 vpath %.c		$(SRC_DIR) $(TEST_DIR) $(UNITY_DIR)/src $(UNITY_DIR)/extras/fixture/src	$(MOCKS_DIR)
