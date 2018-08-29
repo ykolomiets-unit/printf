@@ -9,6 +9,8 @@ typedef struct	s_printf
 	int			fd;
 	char		buffer[BUF_SIZE];	
 	int			pos_in_buffer;
+	char		*external_buffer;
+	int			external_buffer_size;
 	int			(*putc)(struct s_printf *, char);
 	int			(*flush)(struct s_printf *);
 }				t_printf;
@@ -63,7 +65,26 @@ static int	print_to_stream(t_printf *options, char c)
 
 static int	flush_to_stream(t_printf *options)
 {
-	write(options->fd, options->buffer, ft_strlen(options->buffer));
+	int	wrote;
+
+	wrote = write(options->fd, options->buffer, ft_strlen(options->buffer));
+	if (wrote > 0)
+		return (wrote);
+	return (0);
+}
+
+static int	print_to_buf(t_printf *options, char c)
+{
+	options->external_buffer[options->pos_in_buffer++] = c;
+	if (options->pos_in_buffer == options->external_buffer_size)
+		return (1);
+	return (0);
+}
+
+static int flush_to_buf(t_printf *options)
+{
+	(void)options;
+
 	return (0);
 }
 
@@ -74,9 +95,10 @@ int			ft_printf(const char *fmt, ...)
 	t_printf	options;
 
 	options.fd = 1;
+	options.pos_in_buffer = 0;
+	ft_bzero(options.buffer, BUF_SIZE);
 	options.putc = print_to_stream;
 	options.flush = flush_to_stream;
-	options.pos_in_buffer = 0;
 	va_start(ap, fmt);
 	printed = _printf(&options, fmt, &ap);
 	va_end(ap);
@@ -90,9 +112,27 @@ int			ft_dprintf(const int fd, const char *fmt, ...)
 	t_printf	options;
 
 	options.fd = fd;
+	options.pos_in_buffer = 0;
+	ft_bzero(options.buffer, BUF_SIZE);
 	options.putc = print_to_stream;
 	options.flush = flush_to_stream;
+	va_start(ap, fmt);
+	printed = _printf(&options, fmt, &ap);
+	va_end(ap);
+	return (printed);
+}
+
+int			ft_snprintf(char *buf, const int size, const char *fmt, ...)
+{
+	int			printed;
+	va_list		ap;
+	t_printf	options;
+
+	options.external_buffer = buf;
+	options.external_buffer_size = size;
 	options.pos_in_buffer = 0;
+	options.putc = print_to_buf;
+	options.flush = flush_to_buf;
 	va_start(ap, fmt);
 	printed = _printf(&options, fmt, &ap);
 	va_end(ap);

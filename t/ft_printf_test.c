@@ -48,3 +48,9 @@ TEST(ft_printf, output_string_gt_buf_size)
 	read_file(); 
 	TEST_ASSERT_EQUAL_STRING("1234567890", buffer);
 }
+
+TEST(ft_printf, snptinf)
+{
+	ft_snprintf(buffer, BUF_SIZE, "ABCDEFGH");
+	TEST_ASSERT_EQUAL_STRING("ABCDEFGH", buffer);
+}
