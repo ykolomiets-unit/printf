@@ -13,6 +13,25 @@ typedef struct	s_printf
 	int			(*flush)(struct s_printf *);
 }				t_printf;
 
+static void ft_bzero(void *p, int size)
+{
+	char	*s;
+
+	s = (char *)p;
+	while (size--)
+		s[size] = '\0';
+}
+
+static int	ft_strlen(char *s)
+{
+	int	len;
+
+	len	= 0;
+	while (*s++)
+		len++;
+	return (len);
+}
+
 static int	_printf(t_printf *options, register const char *fmt, va_list *ap)
 {
 	(void)ap;
@@ -37,15 +56,14 @@ static int	print_to_stream(t_printf *options, char c)
 	{
 		write(options->fd, options->buffer, BUF_SIZE);
 		options->pos_in_buffer = 0;
-		for (int i = 0; i < BUF_SIZE; i++)//TODO: replace with ft_memset
-			options->buffer[i] = 0;
+		ft_bzero(options->buffer, BUF_SIZE);
 	}
 	return (0);
 }
 
 static int	flush_to_stream(t_printf *options)
 {
-	write(options->fd, options->buffer, BUF_SIZE);
+	write(options->fd, options->buffer, ft_strlen(options->buffer));
 	return (0);
 }
 
@@ -65,7 +83,7 @@ int			ft_printf(const char *fmt, ...)
 	return (printed);
 }
 
-int			ft_dprintf(int fd, const char *fmt, ...)
+int			ft_dprintf(const int fd, const char *fmt, ...)
 {
 	int			printed;
 	va_list		ap;

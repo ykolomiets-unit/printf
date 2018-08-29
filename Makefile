@@ -4,6 +4,7 @@ SRC_DIR :=				./src
 LIB_DIR :=				./lib
 OBJ_DIR :=				./obj
 
+
 INC_DIRS :=				./include					\
 
 HEADERS :=				ft_printf.h					\
@@ -47,8 +48,8 @@ CC_FLAGS +=				-Werror
 
 all: $(TARGET_LIB)
 
-$(TARGET_LIB): $(OBJS)
-	ar rucs $(TARGET_LIB) $(OBJS)
+$(TARGET_LIB): $(OBJS) $(LIBFT)
+	ar rucs $(TARGET_LIB) $(OBJS) $(LIBFT)
 
 $(OBJS): | $(OBJ_DIR)
 
@@ -56,7 +57,10 @@ $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: %.c
-	$(CC) -c $< -o $@ $(CC_FLAGS) $(INC_FLAGS)
+	$(CC) -c $< -o $@ $(CC_FLAGS) $(INC_FLAGS) $(LINK_FLAGS)
+
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
 
 test: $(TEST_EXEC)
 	clear
@@ -76,12 +80,14 @@ $(TEST_OBJ_DIR)/%.o: %.c
 clean:
 	rm -f $(OBJS)		
 	rm -f $(TEST_OBJS)
+	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
 	rm -f $(TARGET_LIB)
 	rm -f $(TEST_EXEC)
 	rm -rf $(OBJ_DIR)
 	rm -rf $(TEST_OBJ_DIR)
+	$(MAKE) -C $(LIBFT_DIR) fclean
 
 .PHONY: all test clean fclean
 
