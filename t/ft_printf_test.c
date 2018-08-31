@@ -54,3 +54,21 @@ TEST(ft_printf, snptinf)
 	ft_snprintf(buffer, BUF_SIZE, "ABCDEFGH");
 	TEST_ASSERT_EQUAL_STRING("ABCDEFGH", buffer);
 }
+
+TEST(ft_printf, only_d)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%d", 123);
+	TEST_ASSERT_EQUAL_STRING("123", buffer);
+}
+
+TEST(ft_printf, string_plus_d)
+{
+	ft_snprintf(buffer, BUF_SIZE, "abc = %d", 321);
+	TEST_ASSERT_EQUAL_STRING("abc = 321", buffer);
+}
+
+TEST(ft_printf, string_plus_negative_num)
+{
+	ft_snprintf(buffer, BUF_SIZE, "abc = %d", -321);
+	TEST_ASSERT_EQUAL_STRING("abc = -321", buffer);
+}

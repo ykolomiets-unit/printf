@@ -18,6 +18,8 @@ TEST_DIR :=				./t
 TEST_EXEC :=			$(TEST_DIR)/printf_test	
 TEST_OBJ_DIR :=			$(TEST_DIR)/obj
 
+TEST_PRINTF_EXEC :=		$(TEST_DIR)/real_printf
+
 UNITY_DIR :=			$(LIB_DIR)/Unity
 UNITY_INC :=			$(UNITY_DIR)/src	
 UNITY_FIXTURE_INC :=	$(UNITY_DIR)/extras/fixture/src
@@ -35,6 +37,7 @@ TEST_SRCS :=			$(UNITY_SRCS)					\
 						ft_printf_test.c				\
 						ft_printf_test_runner.c
 
+TEST_REAL_PRINTF :=		real_printf.c					\
 
 TEST_INC_FLAGS :=		-I$(UNITY_INC) -I$(UNITY_FIXTURE_INC) -I$(MOCKS_INC)
 
@@ -76,6 +79,13 @@ $(TEST_OBJ_DIR):
 
 $(TEST_OBJ_DIR)/%.o: %.c
 	$(CC) -c $< -o $@ $(CC_FLAGS) $(UNITY_FLAGS) $(TEST_INC_FLAGS) $(INC_FLAGS)
+
+check_printf: $(TEST_PRINTF_EXEC)
+	clear
+	$(TEST_PRINTF_EXEC)
+
+$(TEST_PRINTF_EXEC): $(TEST_DIR)/$(TEST_REAL_PRINTF)
+	$(CC) $(TEST_DIR)/$(TEST_REAL_PRINTF) -o $(TEST_PRINTF_EXEC)
 
 clean:
 	rm -f $(OBJS)		

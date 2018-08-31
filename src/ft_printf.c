@@ -1,8 +1,15 @@
 #include "ft_printf.h"
 #include <unistd.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 #define BUF_SIZE 8
+#define INT_BUF_SIZE sizeof(long long int) * 8
+
+#define TRUE 1
+#define FALSE 0
+
+typedef int		boolean;
 
 typedef struct	s_printf
 {
@@ -14,6 +21,12 @@ typedef struct	s_printf
 	int			(*putc)(struct s_printf *, char);
 	int			(*flush)(struct s_printf *);
 }				t_printf;
+
+typedef struct	s_fms
+{
+	char		specifier;
+	boolean		long_long;
+}				t_fms;
 
 static void ft_bzero(void *p, int size)
 {
@@ -34,18 +47,159 @@ static int	ft_strlen(char *s)
 	return (len);
 }
 
-static int	_printf(t_printf *options, register const char *fmt, va_list *ap)
+static int parse_fms(const char **fmt, t_fms *fms, va_list *ap)
 {
 	(void)ap;
+	char	c;
+
+	c = **fmt;
+	(*fmt)++;
+	fms->specifier = c;
+	fms->long_long = FALSE;
+	return (0);
+}
+
+static void get_base_register_sign(char spec, int *base,
+									int *capitals, boolean *is_signed) 
+{
+	if (spec == 'd' || spec == 'D' || spec == 'i' || spec == 'u' || spec == 'U')
+		*base = 10;
+	else if (spec == 'x' || spec == 'X')
+		*base = 16;
+	else if (spec == 'o' || spec == 'O')
+		*base = 8;
+	if (spec == 'X')
+		*capitals = 16;
+	else
+		*capitals = 0;
+	if (spec == 'd' || spec == 'D' || spec == 'i')
+		*is_signed = TRUE;
+	else
+		*is_signed = FALSE;
+}
+
+static int	print_num(unsigned long long u, t_printf *options,
+					  t_fms *fms, int base, int capitals,
+					  char sign_char, int *printed)
+{
+	(void)fms;
+	static char	digs[] = "0123456789abcdef0123456789ABCEDF";
+	char		buffer[INT_BUF_SIZE];
+	char		*p;
+	
+	p = &buffer[INT_BUF_SIZE - 1];
+	do
+	{
+		*p-- = digs[(u % base) + capitals];
+		u /= base;
+	} while (u != 0);
+	if (sign_char)
+	{
+		options->putc(options, sign_char);
+		(*printed)++;
+	}
+	while (++p != &buffer[INT_BUF_SIZE])
+	{
+		options->putc(options, *p);
+		(*printed)++;
+	}
+	return (0);
+}
+
+
+static int	print_signed_integer(t_printf *options, t_fms *fms,
+								int	base, int capitals,
+								va_list *ap, int *printed)
+{
+	long long			n;
+	unsigned long long	u;
+	char				sign_char;
+	
+	if (fms->long_long)
+		n = va_arg(*ap, long long);
+	else
+		n = va_arg(*ap, long);
+	if (n >= 0)
+	{
+		u = n;
+		sign_char = '+';
+	}
+	else
+	{
+		u = -n;
+		sign_char = '-';
+	}
+	return print_num(u, options, fms, base, capitals, sign_char, printed);
+}
+
+static int	print_unsigned_integer(t_printf *options, t_fms *fms,
+								  int base, int capitals,
+								  va_list *ap, int *printed)
+{
+	unsigned long long	u;
+
+	if (fms->long_long)
+		u = va_arg(*ap, unsigned long long);
+	else
+		u = va_arg(*ap, unsigned long);
+	return print_num(u, options, fms, base, capitals, 0, printed);
+}
+
+static int print_integer(t_printf *options, t_fms *fms, va_list *ap, int *printed)
+{
+	int		base;
+	int		capitals;
+	boolean	is_signed;
+	int		res;
+
+	get_base_register_sign(fms->specifier, &base, &capitals, &is_signed);
+	if (is_signed)
+		res = print_signed_integer(options, fms, base, capitals, ap, printed);
+	else
+		res = print_unsigned_integer(options, fms, base, capitals, ap, printed);
+	return (res);
+}
+
+static int print_specifier(t_printf *options, t_fms *fms, va_list *ap, int *printed)
+{
+	char	spec;
+
+	spec = fms->specifier;
+	if (spec == '%')
+	{
+		if (options->putc(options, '%'))
+			(*printed)++;
+	}
+	else if (spec == 'd' || spec == 'i' ||
+		spec == 'o' || spec == 'O' ||
+		spec == 'x' || spec == 'X')
+	{
+		print_integer(options, fms, ap, printed);
+	}
+	return (0);
+}
+
+static int	_printf(t_printf *options, const char *fmt, va_list *ap)
+{
 	int		printed;
 	char	c;
+	t_fms	fms;
 
 	printed = 0;
 	while ((c = *fmt++) != '\0')
 	{
-		if (options->putc(options, c))
-			return printed;
-		printed++;
+		if (c == '%')
+		{
+			parse_fms(&fmt, &fms, ap);
+			if (print_specifier(options, &fms, ap, &printed))
+				return printed;
+		}
+		else
+		{
+			if (options->putc(options, c))
+				return printed;
+			printed++;
+		}
 	}
 	options->flush(options);
 	return (printed);
