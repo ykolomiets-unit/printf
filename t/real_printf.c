@@ -2,9 +2,6 @@
 
 int	main(void)
 {
-	printf("sizeof(short) = %lu\n", sizeof(short));
-	printf("sizeof(int) = %lu\n", sizeof(int));
-	printf("sizeof(long) = %lu\n", sizeof(long));
-	printf("sizeof(long long) = %lu\n", sizeof(long long));
+	printf("%#.x1\n", 0);
 	return (0);
 }

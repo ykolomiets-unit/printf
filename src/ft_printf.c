@@ -6,6 +6,8 @@
 #define BUF_SIZE 8
 #define INT_BUF_SIZE sizeof(long long int) * 8
 
+#define CHAR_TO_DIGIT(x) ((x) - '0')
+
 #define TRUE 1
 #define FALSE 0
 
@@ -25,8 +27,20 @@ typedef struct	s_printf
 typedef struct	s_fms
 {
 	char		specifier;
+	boolean		left_adjust;
+	boolean		altfmt;
+	char		plus_sign;
+	char		padc;
 	boolean		long_long;
+	boolean		long_;
+	int			length;
+	int			precision;
 }				t_fms;
+
+static int	is_digit(char c)
+{
+	return c >= '0' && c <= '9';
+}
 
 static void ft_bzero(void *p, int size)
 {
@@ -47,15 +61,97 @@ static int	ft_strlen(char *s)
 	return (len);
 }
 
-static int parse_fms(const char **fmt, t_fms *fms, va_list *ap)
+static int	parse_flags(const char **fmt, t_fms *fms)
+{
+	char	c;
+
+	fms->padc = ' ';
+	while (TRUE)
+	{
+		c = **fmt;
+		if (c == '#')
+			fms->altfmt = TRUE;
+		else if (c == '-')
+			fms->left_adjust = TRUE;
+		else if (c == '+')
+			fms->plus_sign = '+';
+		else if (c == ' ')
+		{
+			if (!fms->plus_sign)
+				fms->plus_sign = ' ';
+		}
+		else if (c == '0')
+			fms->padc = '0';
+		else
+			break;
+		(*fmt)++;
+	}
+	return (1);
+}
+
+static int	parse_length(const char **fmt, t_fms *fms, va_list *ap)
+{
+	char	c;
+
+	c = **fmt;
+	fms->length = 0;
+	if (is_digit(c)) {
+		while (is_digit(c))
+		{
+			fms->length = fms->length * 10 + CHAR_TO_DIGIT(c);
+			(*fmt)++;
+			c = **fmt;
+		}
+	}
+	else if (c == '*')
+	{
+		fms->length = va_arg(*ap, int);
+		if (fms->length < 0) 
+		{
+			fms->left_adjust = TRUE;
+			fms->length = -fms->length;
+		}
+		(*fmt)++;
+	}
+	return (0);
+}
+
+static int	parse_precision(const char **fmt, t_fms *fms, va_list *ap)
 {
 	(void)ap;
 	char	c;
 
 	c = **fmt;
-	(*fmt)++;
+	fms->precision = -1;
+	if (c == '.')
+	{
+		fms->padc = ' ';
+		(*fmt)++;
+		c = **fmt;
+		if (is_digit(c))
+		{
+			fms->precision = 0;
+			while (is_digit(c))
+			{
+				fms->precision = fms->precision * 10 + CHAR_TO_DIGIT(c);
+				(*fmt)++;
+				c = **fmt;
+			}
+		}
+	}
+	return (0);
+}
+
+static int parse_fms(const char **fmt, t_fms *fms, va_list *ap)
+{
+	char	c;
+
+	parse_flags(fmt, fms);
+	parse_length(fmt, fms, ap);
+	parse_precision(fmt, fms, ap);
+	c = **fmt;
 	fms->specifier = c;
-	fms->long_long = FALSE;
+	(*fmt)++;
 	return (0);
 }
 
@@ -78,31 +174,132 @@ static void get_base_register_sign(char spec, int *base,
 		*is_signed = FALSE;
 }
 
-static int	print_num(unsigned long long u, t_printf *options,
-					  t_fms *fms, int base, int capitals,
-					  char sign_char, int *printed)
+static int	num_in_buffer(unsigned long long u, int base, int capitals, char **buf)
 {
-	(void)fms;
 	static char	digs[] = "0123456789abcdef0123456789ABCEDF";
-	char		buffer[INT_BUF_SIZE];
-	char		*p;
-	
-	p = &buffer[INT_BUF_SIZE - 1];
+	int	length;
+
+	length = 0;
 	do
 	{
-		*p-- = digs[(u % base) + capitals];
+		**buf = digs[(u % base) + capitals];
+		(*buf)--;
 		u /= base;
+		length++;
 	} while (u != 0);
+	return (length);
+}
+
+static char	*get_prefix(unsigned long long u, t_fms *fms, int base, int capitals)
+{
+	if (u == 0 || !fms->altfmt)
+		return 0;
+	if (base == 8)
+		return "0";
+	else if (base == 16)
+		return capitals ? "0X" : "0x";
+	return 0;
+}
+
+static int	get_real_length(int buf_size, char sign_char, char *prefix, int precision)
+{
+	int	length;
+
+	length = buf_size;
+	if (sign_char)
+		length++;
+	if (prefix)
+		length += ft_strlen(prefix);
+	if (precision > 0)
+		length += precision;
+	return (length);
+}
+
+static int	print_spacepad_sign_prefix(t_printf *options, t_fms *fms, char sign_char, char *prefix, int *printed)
+{
+	if (fms->padc == ' ' && !fms->left_adjust)
+	{
+		while (--fms->length >= 0)
+		{
+			options->putc(options, ' ');
+			(*printed)++;
+		}
+	}
 	if (sign_char)
 	{
 		options->putc(options, sign_char);
 		(*printed)++;
 	}
-	while (++p != &buffer[INT_BUF_SIZE])
+	if (prefix)
 	{
-		options->putc(options, *p);
+		while (*prefix)
+		{
+			options->putc(options, *prefix++);
+			(*printed)++;
+		}
+	}
+	return (0);
+}
+
+static int	print_zeropad(t_printf *options, t_fms *fms, int *printed)
+{
+	if (fms->padc == '0')
+	{
+		while (--fms->length >= 0)
+		{
+			options->putc(options, '0');
+			(*printed)++;
+		}
+	}
+	else
+	{
+		while (--fms->precision >= 0)
+		{
+			options->putc(options, '0');
+			(*printed)++;
+		}
+	}
+	return (0);
+}
+
+static int	print_buf_adjust(t_printf *options, t_fms *fms, char *buf_start, char *buf_end, int *printed)
+{
+	while (++buf_start != buf_end)
+	{
+		options->putc(options, *buf_start);
 		(*printed)++;
 	}
+	if (fms->left_adjust)
+	{
+		while (--fms->length >= 0)
+		{
+			options->putc(options, ' ');
+			(*printed)++;
+		}
+	}
+	return (0);
+}
+
+static int	print_num(unsigned long long u, t_printf *options,
+					  t_fms *fms, int base, int capitals,
+					  char sign_char, int *printed)
+{
+	char		buffer[INT_BUF_SIZE];
+	char		*p;
+	char		*prefix;
+	int			num_str_length;
+	
+	p = &buffer[INT_BUF_SIZE - 1];
+	if (u == 0 && fms->precision == 0)
+		num_str_length = 0;
+	else
+		num_str_length = num_in_buffer(u, base, capitals, &p);
+	fms->precision -= num_str_length;
+	prefix = get_prefix(u, fms, base, capitals);
+	fms->length -= get_real_length(num_str_length, sign_char, prefix, fms->precision);
+	print_spacepad_sign_prefix(options, fms, sign_char, prefix, printed);
+	print_zeropad(options, fms, printed);
+	print_buf_adjust(options, fms, p, &buffer[INT_BUF_SIZE], printed);
 	return (0);
 }
 
@@ -117,12 +314,14 @@ static int	print_signed_integer(t_printf *options, t_fms *fms,
 	
 	if (fms->long_long)
 		n = va_arg(*ap, long long);
-	else
+	else if (fms->long_)
 		n = va_arg(*ap, long);
+	else
+		n = va_arg(*ap, int);
 	if (n >= 0)
 	{
 		u = n;
-		sign_char = '+';
+		sign_char = fms->plus_sign;
 	}
 	else
 	{
@@ -140,8 +339,10 @@ static int	print_unsigned_integer(t_printf *options, t_fms *fms,
 
 	if (fms->long_long)
 		u = va_arg(*ap, unsigned long long);
-	else
+	else if (fms->long_)
 		u = va_arg(*ap, unsigned long);
+	else
+		u = va_arg(*ap, unsigned);
 	return print_num(u, options, fms, base, capitals, 0, printed);
 }
 
@@ -186,6 +387,7 @@ static int	_printf(t_printf *options, const char *fmt, va_list *ap)
 	t_fms	fms;
 
 	printed = 0;
+	ft_bzero(&fms, sizeof(fms));
 	while ((c = *fmt++) != '\0')
 	{
 		if (c == '%')
