@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <fcntl.h>
+#include <inttypes.h>
 
 int	main(void)
 {
-	printf("%#.x1\n", 0);
+	printf("intmax_t = %lu\n", sizeof(ssize_t));
 	return (0);
 }

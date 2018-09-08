@@ -2,20 +2,32 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <inttypes.h>
 
-#define BUF_SIZE 8
-#define INT_BUF_SIZE sizeof(long long int) * 8
+#define BUF_SIZE 1024
+#define INT_BUF_SIZE sizeof(intmax_t) * 8
 
 #define CHAR_TO_DIGIT(x) ((x) - '0')
 
 #define TRUE 1
 #define FALSE 0
 
-typedef int		boolean;
+typedef int		t_boolean;
+typedef	enum	e_length_modifier
+{
+	SHORT_SHORT,
+	SHORT,
+	LONG,
+	LONG_LONG,
+	J,
+	Z,
+	NONE
+}				t_length_modifier;
 
 typedef struct	s_printf
 {
 	int			fd;
+	va_list		ap;
 	char		buffer[BUF_SIZE];	
 	int			pos_in_buffer;
 	char		*external_buffer;
@@ -26,15 +38,14 @@ typedef struct	s_printf
 
 typedef struct	s_fms
 {
-	char		specifier;
-	boolean		left_adjust;
-	boolean		altfmt;
-	char		plus_sign;
-	char		padc;
-	boolean		long_long;
-	boolean		long_;
-	int			length;
-	int			precision;
+	char				specifier;
+	t_boolean			left_adjust;
+	t_boolean			altfmt;
+	char				plus_sign;
+	char				padc;
+	t_length_modifier	length_modifier;
+	int					length;
+	int					precision;
 }				t_fms;
 
 static int	is_digit(char c)
@@ -42,7 +53,7 @@ static int	is_digit(char c)
 	return c >= '0' && c <= '9';
 }
 
-static void ft_bzero(void *p, int size)
+static void	ft_bzero(void *p, int size)
 {
 	char	*s;
 
@@ -66,13 +77,15 @@ static int	parse_flags(const char **fmt, t_fms *fms)
 	char	c;
 
 	fms->padc = ' ';
-	while (TRUE)
+	while ((c = **fmt))
 	{
-		c = **fmt;
 		if (c == '#')
 			fms->altfmt = TRUE;
 		else if (c == '-')
+		{
 			fms->left_adjust = TRUE;
+			fms->padc = ' ';
+		}
 		else if (c == '+')
 			fms->plus_sign = '+';
 		else if (c == ' ')
@@ -80,13 +93,13 @@ static int	parse_flags(const char **fmt, t_fms *fms)
 			if (!fms->plus_sign)
 				fms->plus_sign = ' ';
 		}
-		else if (c == '0')
+		else if (c == '0' && !fms->left_adjust)
 			fms->padc = '0';
 		else
 			break;
 		(*fmt)++;
 	}
-	return (1);
+	return (0);
 }
 
 static int	parse_length(const char **fmt, t_fms *fms, va_list *ap)
@@ -118,7 +131,6 @@ static int	parse_length(const char **fmt, t_fms *fms, va_list *ap)
 
 static int	parse_precision(const char **fmt, t_fms *fms, va_list *ap)
 {
-	(void)ap;
 	char	c;
 
 	c = **fmt;
@@ -128,9 +140,9 @@ static int	parse_precision(const char **fmt, t_fms *fms, va_list *ap)
 		fms->padc = ' ';
 		(*fmt)++;
 		c = **fmt;
+		fms->precision = 0;
 		if (is_digit(c))
 		{
-			fms->precision = 0;
 			while (is_digit(c))
 			{
 				fms->precision = fms->precision * 10 + CHAR_TO_DIGIT(c);
@@ -138,25 +150,78 @@ static int	parse_precision(const char **fmt, t_fms *fms, va_list *ap)
 				c = **fmt;
 			}
 		}
+		else if (c == '*')
+		{
+			fms->precision = va_arg(*ap, int);
+			(*fmt)++;
+		}
 	}
 	return (0);
 }
 
-static int parse_fms(const char **fmt, t_fms *fms, va_list *ap)
+static int	parse_length_modifier(const char **fmt, t_fms *fms)
+{
+	if (**fmt == 'h')
+	{
+		(*fmt)++;
+		if (**fmt == 'h')
+		{
+			fms->length_modifier = SHORT_SHORT;
+			(*fmt)++;
+		}
+		else
+			fms->length_modifier = SHORT;	
+	}
+	else if (**fmt == 'l')
+	{
+		(*fmt)++;
+		if (**fmt == 'l')
+		{
+			fms->length_modifier = LONG_LONG;
+			(*fmt)++;
+		}
+		else
+			fms->length_modifier = LONG;	
+	}
+	else if (**fmt == 'z')
+	{
+		(*fmt)++;
+		fms->length_modifier = Z;
+	}
+	else if (**fmt == 'j')
+	{
+		(*fmt)++;
+		fms->length_modifier = J;
+	}
+	else
+		fms->length_modifier = NONE;
+	return (0);
+}
+
+static int parse_specifier(const char **fmt, t_fms *fms)
 {
 	char	c;
 
-	parse_flags(fmt, fms);
-	parse_length(fmt, fms, ap);
-	parse_precision(fmt, fms, ap);
 	c = **fmt;
+	if (c == 'U' || c == 'D' || c == 'O')
+		fms->length_modifier = LONG;
 	fms->specifier = c;
 	(*fmt)++;
 	return (0);
 }
 
+static int	parse_fms(const char **fmt, t_fms *fms, va_list *ap)
+{
+	parse_flags(fmt, fms);
+	parse_length(fmt, fms, ap);
+	parse_precision(fmt, fms, ap);
+	parse_length_modifier(fmt, fms);
+	parse_specifier(fmt, fms);
+	return (0);
+}
+
 static void get_base_register_sign(char spec, int *base,
-									int *capitals, boolean *is_signed) 
+									int *capitals, t_boolean *is_signed) 
 {
 	if (spec == 'd' || spec == 'D' || spec == 'i' || spec == 'u' || spec == 'U')
 		*base = 10;
@@ -174,10 +239,10 @@ static void get_base_register_sign(char spec, int *base,
 		*is_signed = FALSE;
 }
 
-static int	num_in_buffer(unsigned long long u, int base, int capitals, char **buf)
+static int	num_in_buffer(uintmax_t u, int base, int capitals, char **buf)
 {
-	static char	digs[] = "0123456789abcdef0123456789ABCEDF";
-	int	length;
+	static char	digs[] = "0123456789abcdef0123456789ABCDEF";
+	int			length;
 
 	length = 0;
 	do
@@ -190,15 +255,17 @@ static int	num_in_buffer(unsigned long long u, int base, int capitals, char **bu
 	return (length);
 }
 
-static char	*get_prefix(unsigned long long u, t_fms *fms, int base, int capitals)
+static char	*get_prefix(uintmax_t u, t_fms *fms, int base, int capitals)
 {
-	if (u == 0 || !fms->altfmt)
-		return 0;
-	if (base == 8)
-		return "0";
+	if (base == 8 && fms->altfmt)
+		return ("0");
 	else if (base == 16)
-		return capitals ? "0X" : "0x";
-	return 0;
+	{
+		if (u == 0 || !fms->altfmt)
+			return (0);
+		return (capitals ? "0X" : "0x");
+	}
+	return (0);
 }
 
 static int	get_real_length(int buf_size, char sign_char, char *prefix, int precision)
@@ -280,7 +347,7 @@ static int	print_buf_adjust(t_printf *options, t_fms *fms, char *buf_start, char
 	return (0);
 }
 
-static int	print_num(unsigned long long u, t_printf *options,
+static int	print_num(uintmax_t u, t_printf *options,
 					  t_fms *fms, int base, int capitals,
 					  char sign_char, int *printed)
 {
@@ -305,19 +372,26 @@ static int	print_num(unsigned long long u, t_printf *options,
 
 
 static int	print_signed_integer(t_printf *options, t_fms *fms,
-								int	base, int capitals,
-								va_list *ap, int *printed)
+								int	base, int capitals, int *printed)
 {
-	long long			n;
-	unsigned long long	u;
-	char				sign_char;
+	intmax_t	n;
+	uintmax_t	u;
+	char		sign_char;
 	
-	if (fms->long_long)
-		n = va_arg(*ap, long long);
-	else if (fms->long_)
-		n = va_arg(*ap, long);
-	else
-		n = va_arg(*ap, int);
+	if (fms->length_modifier == NONE)
+		n = va_arg(options->ap, int);
+	else if (fms->length_modifier == LONG)
+		n = va_arg(options->ap, long);
+	else if (fms->length_modifier == LONG_LONG)
+		n = va_arg(options->ap, long long);
+	else if (fms->length_modifier == SHORT)
+		n = (short) va_arg(options->ap, int);
+	else if (fms->length_modifier == SHORT_SHORT)
+		n = (signed char) va_arg(options->ap, int);
+	else if (fms->length_modifier == J)
+		n = va_arg(options->ap, intmax_t);
+	else /*length_modifier == Z*/
+		n = va_arg(options->ap, ssize_t);
 	if (n >= 0)
 	{
 		u = n;
@@ -332,36 +406,56 @@ static int	print_signed_integer(t_printf *options, t_fms *fms,
 }
 
 static int	print_unsigned_integer(t_printf *options, t_fms *fms,
-								  int base, int capitals,
-								  va_list *ap, int *printed)
+								  int base, int capitals, int *printed)
 {
-	unsigned long long	u;
+	uintmax_t	u;
 
-	if (fms->long_long)
-		u = va_arg(*ap, unsigned long long);
-	else if (fms->long_)
-		u = va_arg(*ap, unsigned long);
-	else
-		u = va_arg(*ap, unsigned);
+	if (fms->length_modifier == NONE)
+		u = va_arg(options->ap, unsigned);
+	else if (fms->length_modifier == LONG_LONG)
+		u = va_arg(options->ap, unsigned long long);
+	else if (fms->length_modifier == LONG)
+		u = va_arg(options->ap, unsigned long);
+	else if (fms->length_modifier == SHORT)
+		u = (unsigned short) va_arg(options->ap, int);
+	else if (fms->length_modifier == SHORT_SHORT)
+		u = (unsigned char) va_arg(options->ap, int);
+	else if (fms->length_modifier == J)
+		u = va_arg(options->ap, uintmax_t);
+	else /* if (fms->length_modifier == J) */
+		u = va_arg(options->ap, size_t);
 	return print_num(u, options, fms, base, capitals, 0, printed);
 }
 
-static int print_integer(t_printf *options, t_fms *fms, va_list *ap, int *printed)
+static int	print_integer(t_printf *options, t_fms *fms, int *printed)
 {
-	int		base;
-	int		capitals;
-	boolean	is_signed;
-	int		res;
+	int			base;
+	int			capitals;
+	t_boolean	is_signed;
+	int			res;
 
 	get_base_register_sign(fms->specifier, &base, &capitals, &is_signed);
 	if (is_signed)
-		res = print_signed_integer(options, fms, base, capitals, ap, printed);
+		res = print_signed_integer(options, fms, base, capitals, printed);
 	else
-		res = print_unsigned_integer(options, fms, base, capitals, ap, printed);
+		res = print_unsigned_integer(options, fms, base, capitals, printed);
 	return (res);
 }
 
-static int print_specifier(t_printf *options, t_fms *fms, va_list *ap, int *printed)
+static int is_integer_specifier(char spec)
+{
+	if (spec == 'd' || spec == 'D' ||
+		spec == 'u' || spec == 'U' || 
+		spec == 'i' ||
+		spec == 'o' || spec == 'O' ||
+		spec == 'x' || spec == 'X')
+	{
+		return (1);
+	}
+	return (0);
+}
+
+static int print_specifier(t_printf *options, t_fms *fms, int *printed)
 {
 	char	spec;
 
@@ -371,16 +465,14 @@ static int print_specifier(t_printf *options, t_fms *fms, va_list *ap, int *prin
 		if (options->putc(options, '%'))
 			(*printed)++;
 	}
-	else if (spec == 'd' || spec == 'i' ||
-		spec == 'o' || spec == 'O' ||
-		spec == 'x' || spec == 'X')
+	else if (is_integer_specifier(spec))
 	{
-		print_integer(options, fms, ap, printed);
+		print_integer(options, fms, printed);
 	}
 	return (0);
 }
 
-static int	_printf(t_printf *options, const char *fmt, va_list *ap)
+static int	_printf(t_printf *options, const char *fmt)
 {
 	int		printed;
 	char	c;
@@ -392,8 +484,8 @@ static int	_printf(t_printf *options, const char *fmt, va_list *ap)
 	{
 		if (c == '%')
 		{
-			parse_fms(&fmt, &fms, ap);
-			if (print_specifier(options, &fms, ap, &printed))
+			parse_fms(&fmt, &fms, &options->ap);
+			if (print_specifier(options, &fms, &printed))
 				return printed;
 		}
 		else
@@ -447,7 +539,6 @@ static int flush_to_buf(t_printf *options)
 int			ft_printf(const char *fmt, ...)
 {
 	int			printed;
-	va_list		ap;
 	t_printf	options;
 
 	options.fd = 1;
@@ -455,16 +546,15 @@ int			ft_printf(const char *fmt, ...)
 	ft_bzero(options.buffer, BUF_SIZE);
 	options.putc = print_to_stream;
 	options.flush = flush_to_stream;
-	va_start(ap, fmt);
-	printed = _printf(&options, fmt, &ap);
-	va_end(ap);
+	va_start(options.ap, fmt);
+	printed = _printf(&options, fmt);
+	va_end(options.ap);
 	return (printed);
 }
 
 int			ft_dprintf(const int fd, const char *fmt, ...)
 {
 	int			printed;
-	va_list		ap;
 	t_printf	options;
 
 	options.fd = fd;
@@ -472,16 +562,15 @@ int			ft_dprintf(const int fd, const char *fmt, ...)
 	ft_bzero(options.buffer, BUF_SIZE);
 	options.putc = print_to_stream;
 	options.flush = flush_to_stream;
-	va_start(ap, fmt);
-	printed = _printf(&options, fmt, &ap);
-	va_end(ap);
+	va_start(options.ap, fmt);
+	printed = _printf(&options, fmt);
+	va_end(options.ap);
 	return (printed);
 }
 
 int			ft_snprintf(char *buf, const int size, const char *fmt, ...)
 {
 	int			printed;
-	va_list		ap;
 	t_printf	options;
 
 	options.external_buffer = buf;
@@ -489,8 +578,8 @@ int			ft_snprintf(char *buf, const int size, const char *fmt, ...)
 	options.pos_in_buffer = 0;
 	options.putc = print_to_buf;
 	options.flush = flush_to_buf;
-	va_start(ap, fmt);
-	printed = _printf(&options, fmt, &ap);
-	va_end(ap);
+	va_start(options.ap, fmt);
+	printed = _printf(&options, fmt);
+	va_end(options.ap);
 	return (printed);
 }

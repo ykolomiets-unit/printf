@@ -17,6 +17,7 @@ TEST_GROUP_RUNNER(ft_printf)
 	RUN_TEST_CASE(ft_printf, string_plus_o_altfmt_flag);
 	RUN_TEST_CASE(ft_printf, string_plus_X);
 	RUN_TEST_CASE(ft_printf, string_plus_X_altfmt_flag);
+	RUN_TEST_CASE(ft_printf, minus_and_zero_flags);
 	RUN_TEST_CASE(ft_printf, string_plus_negative_num);
 	RUN_TEST_CASE(ft_printf, d_with_length);
 	RUN_TEST_CASE(ft_printf, d_with_asterix_length);
@@ -29,5 +30,20 @@ TEST_GROUP_RUNNER(ft_printf)
 	RUN_TEST_CASE(ft_printf, d_with_precision_and_additional_flags);
 	RUN_TEST_CASE(ft_printf, d_with_length_and_precision);
 	RUN_TEST_CASE(ft_printf, d_with_0_precision);
+	RUN_TEST_CASE(ft_printf, o_with_0_presicion_and_altfmt);
+	RUN_TEST_CASE(ft_printf, empty_precision_with_zero_value);
 	RUN_TEST_CASE(ft_printf, d_equals_0_with_0_precision);
+	RUN_TEST_CASE(ft_printf, d_with_asterix_precision);
+	RUN_TEST_CASE(ft_printf, d_with_negative_asterix_precision);
+	RUN_TEST_CASE(ft_printf, string_plus_u);
+	RUN_TEST_CASE(ft_printf, string_plus_u_and_negative_value);
+	RUN_TEST_CASE(ft_printf, hd_with_value_gt_maxshort);
+	RUN_TEST_CASE(ft_printf, hhd_with_value_gt_maxshort);
+	RUN_TEST_CASE(ft_printf, U_with_maximum_unsigned_long);
+	RUN_TEST_CASE(ft_printf, hU_with_maximum_unsigned_long);
+	RUN_TEST_CASE(ft_printf, jx_with_4294967296);
+	RUN_TEST_CASE(ft_printf, jx_with_minus_4294967296);
+	RUN_TEST_CASE(ft_printf, jx_with_minus_4294967297);
+	RUN_TEST_CASE(ft_printf, jd_with_9223372036854775807);
+	RUN_TEST_CASE(ft_printf, jd_with_minus_9223372036854775808);
 }

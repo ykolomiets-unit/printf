@@ -49,6 +49,8 @@ CC_FLAGS :=				-Wall
 CC_FLAGS +=				-Wextra
 CC_FLAGS +=				-Werror
 
+TEST_CC_FLAGS :=		-Wall -Wextra
+
 all: $(TARGET_LIB)
 
 $(TARGET_LIB): $(OBJS) $(LIBFT)
@@ -78,7 +80,7 @@ $(TEST_OBJ_DIR):
 	mkdir -p $(TEST_OBJ_DIR)
 
 $(TEST_OBJ_DIR)/%.o: %.c
-	$(CC) -c $< -o $@ $(CC_FLAGS) $(UNITY_FLAGS) $(TEST_INC_FLAGS) $(INC_FLAGS)
+	$(CC) -c $< -o $@ $(TEST_CC_FLAGS) $(UNITY_FLAGS) $(TEST_INC_FLAGS) $(INC_FLAGS)
 
 check_printf: $(TEST_PRINTF_EXEC)
 	clear

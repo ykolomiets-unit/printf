@@ -198,3 +198,102 @@ TEST(ft_printf, d_equals_0_with_0_precision)
 	ft_snprintf(buffer, BUF_SIZE, "%.0d", 0);
 	TEST_ASSERT_EQUAL_STRING("", buffer);
 }
+
+TEST(ft_printf, empty_precision_with_zero_value)
+{
+	ft_snprintf(buffer, BUF_SIZE, "abc = %#.x", 0);
+	TEST_ASSERT_EQUAL_STRING("abc = ", buffer);
+}
+
+TEST(ft_printf, o_with_0_presicion_and_altfmt)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%#.o %#.0o", 0, 0);
+	TEST_ASSERT_EQUAL_STRING("0 0", buffer);
+}
+
+TEST(ft_printf, d_with_asterix_precision)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%.*d", 5, 10);
+	TEST_ASSERT_EQUAL_STRING("00010", buffer);
+}
+
+TEST(ft_printf, d_with_negative_asterix_precision)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%.*d", -5, 10);
+	TEST_ASSERT_EQUAL_STRING("10", buffer);
+}
+
+TEST(ft_printf, string_plus_u)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%u", 10);
+	TEST_ASSERT_EQUAL_STRING("10", buffer);
+}
+
+
+TEST(ft_printf, string_plus_u_and_negative_value)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%u", -1);
+	TEST_ASSERT_EQUAL_STRING("4294967295", buffer);
+}
+
+TEST(ft_printf, hd_with_value_gt_maxshort)
+{
+	int d = 100000;
+	ft_snprintf(buffer, BUF_SIZE, "%hd", d);
+	TEST_ASSERT_EQUAL_STRING("-31072", buffer);
+}
+
+TEST(ft_printf, hhd_with_value_gt_maxshort)
+{
+	int d = 100000;
+	ft_snprintf(buffer, BUF_SIZE, "%hhd", d);
+	TEST_ASSERT_EQUAL_STRING("-96", buffer);
+}
+
+TEST(ft_printf, minus_and_zero_flags)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%#-08x", 42);
+	TEST_ASSERT_EQUAL_STRING("0x2a    ", buffer);
+}
+
+TEST(ft_printf, U_with_maximum_unsigned_long)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%U", 4294967296);
+	TEST_ASSERT_EQUAL_STRING("4294967296", buffer);
+}
+
+TEST(ft_printf, hU_with_maximum_unsigned_long)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%hU", 4294967296);
+	TEST_ASSERT_EQUAL_STRING("4294967296", buffer);
+}
+
+TEST(ft_printf, jx_with_4294967296)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%jx", 4294967296);
+	TEST_ASSERT_EQUAL_STRING("100000000", buffer);
+}
+
+TEST(ft_printf, jx_with_minus_4294967296)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%jx", -4294967296);
+	TEST_ASSERT_EQUAL_STRING("ffffffff00000000", buffer);
+}
+
+TEST(ft_printf, jx_with_minus_4294967297)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%jx", -4294967297);
+	TEST_ASSERT_EQUAL_STRING("fffffffeffffffff", buffer);
+}
+
+TEST(ft_printf, jd_with_9223372036854775807)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%jd", 9223372036854775807);
+	TEST_ASSERT_EQUAL_STRING("9223372036854775807", buffer);
+}
+
+TEST(ft_printf, jd_with_minus_9223372036854775808)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%jd", -9223372036854775808);
+	TEST_ASSERT_EQUAL_STRING("-9223372036854775808", buffer);
+}
