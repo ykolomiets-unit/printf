@@ -15,13 +15,13 @@ typedef int				t_boolean;
 
 typedef	enum			e_length_modifier
 {
+	NONE,
 	SHORT_SHORT,
 	SHORT,
 	LONG,
 	LONG_LONG,
 	J,
-	Z,
-	NONE
+	Z
 }						t_length_modifier;
 
 typedef struct			s_printf

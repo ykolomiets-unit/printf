@@ -3,43 +3,35 @@
 #include <unistd.h>
 #include <inttypes.h>
 
-static int	parse_flags(const char **fmt, t_fms *fms)
+static void	parse_flag(const char **fmt, t_fms *fms)
 {
 	char	c;
 
-	fms->padc = ' ';
-	while ((c = **fmt))
+	c = **fmt;
+	if (c == '#')
+		fms->altfmt = TRUE;
+	else if (**fmt == '-')
 	{
-		if (c == '#')
-			fms->altfmt = TRUE;
-		else if (c == '-')
-		{
-			fms->left_adjust = TRUE;
-			fms->padc = ' ';
-		}
-		else if (c == '+')
-			fms->plus_sign = '+';
-		else if (c == ' ')
-		{
-			if (!fms->plus_sign)
-				fms->plus_sign = ' ';
-		}
-		else if (c == '0' && !fms->left_adjust)
-			fms->padc = '0';
-		else
-			break;
-		(*fmt)++;
+		fms->left_adjust = TRUE;
+		fms->padc = ' ';
 	}
-	return (0);
+	else if (c == '+')
+		fms->plus_sign = '+';
+	else if (c == ' ' && !fms->plus_sign)
+		fms->plus_sign = ' ';
+	else if (c == '0' && !fms->left_adjust && fms->precision == -1)
+		fms->padc = '0';
+	(*fmt)++;
 }
 
-static int	parse_length(const char **fmt, t_fms *fms, va_list *ap)
+static void	parse_length(const char **fmt, t_fms *fms, va_list *ap)
 {
 	char	c;
 
 	c = **fmt;
 	fms->length = 0;
-	if (IS_DIGIT(c)) {
+	if (IS_DIGIT(c))
+	{
 		while (IS_DIGIT(c))
 		{
 			fms->length = fms->length * 10 + CHAR_TO_DIGIT(c);
@@ -57,15 +49,13 @@ static int	parse_length(const char **fmt, t_fms *fms, va_list *ap)
 		}
 		(*fmt)++;
 	}
-	return (0);
 }
 
-static int	parse_precision(const char **fmt, t_fms *fms, va_list *ap)
+static void	parse_precision(const char **fmt, t_fms *fms, va_list *ap)
 {
 	char	c;
 
 	c = **fmt;
-	fms->precision = -1;
 	if (c == '.')
 	{
 		fms->padc = ' ';
@@ -87,49 +77,44 @@ static int	parse_precision(const char **fmt, t_fms *fms, va_list *ap)
 			(*fmt)++;
 		}
 	}
-	return (0);
 }
 
-static int	parse_length_modifier(const char **fmt, t_fms *fms)
+static void set_length_modifier(t_fms *fms, t_length_modifier modifier)
+{
+	if (fms->length_modifier < modifier)
+		fms->length_modifier = modifier;
+}
+
+static void	parse_length_modifier(const char **fmt, t_fms *fms)
 {
 	if (**fmt == 'h')
 	{
-		(*fmt)++;
-		if (**fmt == 'h')
+		if (*(*fmt + 1) == 'h')
 		{
-			fms->length_modifier = SHORT_SHORT;
 			(*fmt)++;
+			set_length_modifier(fms, SHORT_SHORT);
 		}
 		else
-			fms->length_modifier = SHORT;	
+			set_length_modifier(fms, SHORT);
 	}
 	else if (**fmt == 'l')
 	{
-		(*fmt)++;
-		if (**fmt == 'l')
+		if (*(*fmt + 1) == 'l')
 		{
-			fms->length_modifier = LONG_LONG;
 			(*fmt)++;
+			set_length_modifier(fms, LONG_LONG);
 		}
 		else
-			fms->length_modifier = LONG;	
+			set_length_modifier(fms, LONG);
 	}
 	else if (**fmt == 'z')
-	{
-		(*fmt)++;
-		fms->length_modifier = Z;
-	}
+		set_length_modifier(fms, Z);
 	else if (**fmt == 'j')
-	{
-		(*fmt)++;
-		fms->length_modifier = J;
-	}
-	else
-		fms->length_modifier = NONE;
-	return (0);
+		set_length_modifier(fms, J);
+	(*fmt)++;
 }
 
-static int parse_specifier(const char **fmt, t_fms *fms)
+static void parse_specifier(const char **fmt, t_fms *fms)
 {
 	char	c;
 
@@ -138,16 +123,74 @@ static int parse_specifier(const char **fmt, t_fms *fms)
 		fms->length_modifier = LONG;
 	fms->specifier = c;
 	(*fmt)++;
+}
+
+static int	is_flag(char c)
+{
+	if (c == '#' || c == ' ' || c == '0' || c == '+' || c == '-')
+		return (1);
+	return (0);
+}
+
+static int	is_length_start(char c)
+{
+	if (IS_DIGIT(c) || c == '*')
+		return (1);
+	return (0);
+}
+
+static int	is_precision_start(char c)
+{
+	if (c == '.')
+		return (1);
+	return (0);
+}
+
+static int	is_length_modifier_start(char c)
+{
+	if (c == 'h' || c == 'l' || c == 'z' || c == 'j')
+		return (1);
+	return (0);
+}
+
+static int	is_conversion_specifier(char c)
+{
+	static char	specifiers[] = "douxiDOUX";
+	char		*p;
+
+	p = specifiers;
+	while (*p)
+	{
+		if (c == *p)
+			return (1);
+		p++;
+	}
 	return (0);
 }
 
 static int	parse_fms(const char **fmt, t_fms *fms, va_list *ap)
 {
-	parse_flags(fmt, fms);
-	parse_length(fmt, fms, ap);
-	parse_precision(fmt, fms, ap);
-	parse_length_modifier(fmt, fms);
-	parse_specifier(fmt, fms);
+	char	c;
+
+	do
+	{
+		c = **fmt;
+		if (is_flag(c))
+			parse_flag(fmt, fms);
+		else if (is_length_start(c))
+			parse_length(fmt, fms, ap);
+		else if (is_precision_start(c))
+			parse_precision(fmt, fms, ap);
+		else if (is_length_modifier_start(c))
+			parse_length_modifier(fmt, fms);
+		else if (is_conversion_specifier(c))
+		{
+			parse_specifier(fmt, fms);
+			break;
+		}
+		else
+			break;
+	} while(c);
 	return (0);
 }
 
@@ -397,10 +440,20 @@ static int	print_specifier(t_printf *options, t_fms *fms, int *printed)
 			(*printed)++;
 	}
 	else if (is_integer_specifier(spec))
-	{
 		print_integer(options, fms, printed);
-	}
 	return (0);
+}
+
+void		set_default_fms(t_fms *fms)
+{
+	fms->padc = ' ';
+	fms->altfmt = FALSE;
+	fms->left_adjust = FALSE;
+	fms->plus_sign = 0;
+	fms->length_modifier = NONE;
+	fms->specifier = 0;
+	fms->length = 0;
+	fms->precision = -1;
 }
 
 int			_printf(t_printf *options, const char *fmt)
@@ -410,11 +463,11 @@ int			_printf(t_printf *options, const char *fmt)
 	t_fms	fms;
 
 	printed = 0;
-	ft_bzero(&fms, sizeof(fms));
 	while ((c = *fmt++) != '\0')
 	{
 		if (c == '%')
 		{
+			set_default_fms(&fms);
 			parse_fms(&fmt, &fms, options->ap);
 			if (print_specifier(options, &fms, &printed))
 				return printed;
