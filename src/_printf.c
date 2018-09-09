@@ -3,11 +3,6 @@
 #include <unistd.h>
 #include <inttypes.h>
 
-static int	is_digit(char c)
-{
-	return c >= '0' && c <= '9';
-}
-
 static int	parse_flags(const char **fmt, t_fms *fms)
 {
 	char	c;
@@ -44,8 +39,8 @@ static int	parse_length(const char **fmt, t_fms *fms, va_list *ap)
 
 	c = **fmt;
 	fms->length = 0;
-	if (is_digit(c)) {
-		while (is_digit(c))
+	if (IS_DIGIT(c)) {
+		while (IS_DIGIT(c))
 		{
 			fms->length = fms->length * 10 + CHAR_TO_DIGIT(c);
 			(*fmt)++;
@@ -77,9 +72,9 @@ static int	parse_precision(const char **fmt, t_fms *fms, va_list *ap)
 		(*fmt)++;
 		c = **fmt;
 		fms->precision = 0;
-		if (is_digit(c))
+		if (IS_DIGIT(c))
 		{
-			while (is_digit(c))
+			while (IS_DIGIT(c))
 			{
 				fms->precision = fms->precision * 10 + CHAR_TO_DIGIT(c);
 				(*fmt)++;
