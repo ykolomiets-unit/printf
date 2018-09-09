@@ -41,8 +41,7 @@ int			ft_vdprintf(const int fd, const char *fmt, va_list *ap)
 	options.flush = flush_to_stream;
 	options.ap = ap;
 	options.printed = 0;
-	res = _printf(&options, fmt);
-	if (res == -1)
+	if ((res = _printf(&options, fmt)))
 		return (-1);
 	return (options.printed);
 }

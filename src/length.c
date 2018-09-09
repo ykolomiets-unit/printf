@@ -1,0 +1,36 @@
+#include "_printf.h"
+#include "utils.h"
+
+int		is_length_start(char c)
+{
+	if (IS_DIGIT(c) || c == '*')
+		return (1);
+	return (0);
+}
+
+void	parse_length(const char **fmt, t_fms *fms, va_list *ap)
+{
+	char	c;
+
+	c = **fmt;
+	fms->length = 0;
+	if (IS_DIGIT(c))
+	{
+		while (IS_DIGIT(c))
+		{
+			fms->length = fms->length * 10 + CHAR_TO_DIGIT(c);
+			(*fmt)++;
+			c = **fmt;
+		}
+	}
+	else if (c == '*')
+	{
+		fms->length = va_arg(*ap, int);
+		if (fms->length < 0) 
+		{
+			fms->left_adjust = TRUE;
+			fms->length = -fms->length;
+		}
+		(*fmt)++;
+	}
+}

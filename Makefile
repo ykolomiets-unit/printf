@@ -5,11 +5,14 @@ LIB_DIR :=				./lib
 OBJ_DIR :=				./obj
 
 
-INC_DIRS :=				./include					\
+INC_DIR :=				./include
 
 HEADERS :=				ft_printf.h					\
 						_printf.h					\
-						utils.h						\
+						utils.h						
+
+HEADERS_DEP :=			$(addprefix $(INC_DIR)/, $(HEADERS))
+
 
 SRCS :=					ft_printf.c					\
 						ft_dprintf.c				\
@@ -18,9 +21,17 @@ SRCS :=					ft_printf.c					\
 						ft_vsnprintf.c				\
 						utils.c						\
 						_printf.c					\
+						flags.c						\
+						length.c					\
+						precision.c					\
+						length_modifier.c			\
+						specifier.c					\
+						print_integer.c				\
+						print_percent.c				\
+
 
 OBJS :=					$(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
-INC_FLAGS :=			$(addprefix -I, $(INC_DIRS))
+INC_FLAGS :=			$(addprefix -I, $(INC_DIR))
 
 TEST_DIR :=				./t
 TEST_EXEC :=			$(TEST_DIR)/printf_test	
@@ -69,7 +80,7 @@ $(OBJS): | $(OBJ_DIR)
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-$(OBJ_DIR)/%.o: %.c
+$(OBJ_DIR)/%.o: %.c $(HEADERS_DEP)
 	$(CC) -c $< -o $@ $(CC_FLAGS) $(INC_FLAGS) $(LINK_FLAGS)
 
 $(LIBFT):
