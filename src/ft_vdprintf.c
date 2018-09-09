@@ -5,10 +5,14 @@
 
 static int	print_to_stream(t_printf *options, char c)
 {
+	int	wrote;
+
 	options->buffer[options->pos_in_buffer++] = c;
 	if (options->pos_in_buffer == BUF_SIZE)
 	{
-		write(options->fd, options->buffer, BUF_SIZE);
+		if ((wrote = write(options->fd, options->buffer, BUF_SIZE)) == -1)
+			return (-1);
+		options->printed += wrote;
 		options->pos_in_buffer = 0;
 		ft_bzero(options->buffer, BUF_SIZE);
 	}
@@ -19,15 +23,16 @@ static int	flush_to_stream(t_printf *options)
 {
 	int	wrote;
 
-	wrote = write(options->fd, options->buffer, ft_strlen(options->buffer));
-	if (wrote > 0)
-		return (wrote);
+	if ((wrote = write(options->fd, options->buffer, options->pos_in_buffer)) == -1)
+		return (-1);
+	options->printed += wrote;
 	return (0);
 }
 
 int			ft_vdprintf(const int fd, const char *fmt, va_list *ap)
 {
 	t_printf	options;
+	int			res;
 
 	options.fd = fd;
 	options.pos_in_buffer = 0;
@@ -35,5 +40,9 @@ int			ft_vdprintf(const int fd, const char *fmt, va_list *ap)
 	options.putc = print_to_stream;
 	options.flush = flush_to_stream;
 	options.ap = ap;
-	return _printf(&options, fmt);
+	options.printed = 0;
+	res = _printf(&options, fmt);
+	if (res == -1)
+		return (-1);
+	return (options.printed);
 }

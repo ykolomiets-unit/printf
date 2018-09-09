@@ -4,6 +4,7 @@
 static int	print_to_buf(t_printf *options, char c)
 {
 	options->external_buffer[options->pos_in_buffer++] = c;
+	options->printed++;
 	if (options->pos_in_buffer == options->external_buffer_size)
 		return (1);
 	return (0);
@@ -26,5 +27,7 @@ int			ft_vsnprintf(char *buf, const int size, const char *fmt, va_list *ap)
 	options.pos_in_buffer = 0;
 	options.putc = print_to_buf;
 	options.flush = flush_to_buf;
-	return (_printf(&options, fmt));
+	options.printed = 0;
+	_printf(&options, fmt);
+	return (options.printed);
 }

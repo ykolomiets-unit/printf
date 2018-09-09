@@ -8,8 +8,16 @@ OBJ_DIR :=				./obj
 INC_DIRS :=				./include					\
 
 HEADERS :=				ft_printf.h					\
+						_printf.h					\
+						utils.h						\
 
 SRCS :=					ft_printf.c					\
+						ft_dprintf.c				\
+						ft_snprintf.c				\
+						ft_vdprintf.c				\
+						ft_vsnprintf.c				\
+						utils.c						\
+						_printf.c					\
 
 OBJS :=					$(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 INC_FLAGS :=			$(addprefix -I, $(INC_DIRS))
@@ -92,15 +100,15 @@ $(TEST_PRINTF_EXEC): $(TEST_DIR)/$(TEST_REAL_PRINTF)
 clean:
 	rm -f $(OBJS)		
 	rm -f $(TEST_OBJS)
-	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
 	rm -f $(TARGET_LIB)
 	rm -f $(TEST_EXEC)
 	rm -rf $(OBJ_DIR)
 	rm -rf $(TEST_OBJ_DIR)
-	$(MAKE) -C $(LIBFT_DIR) fclean
 
-.PHONY: all test clean fclean
+re: fclean all
+
+.PHONY: all test clean fclean re
 
 vpath %.c		$(SRC_DIR) $(TEST_DIR) $(UNITY_DIR)/src $(UNITY_DIR)/extras/fixture/src	$(MOCKS_DIR)

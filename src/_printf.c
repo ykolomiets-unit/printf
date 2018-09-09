@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <inttypes.h>
 
+#include <stdio.h>
+
 static void	parse_flag(const char **fmt, t_fms *fms)
 {
 	char	c;
@@ -155,7 +157,7 @@ static int	is_length_modifier_start(char c)
 
 static int	is_conversion_specifier(char c)
 {
-	static char	specifiers[] = "douxiDOUX";
+	static char	specifiers[] = "%douxiDOUX";
 	char		*p;
 
 	p = specifiers;
@@ -256,74 +258,64 @@ static int	get_real_length(int buf_size, char sign_char, char *prefix, int preci
 	return (length);
 }
 
-static int	print_spacepad_sign_prefix(t_printf *options, t_fms *fms, char sign_char, char *prefix, int *printed)
+static int	print_spacepad_sign_prefix(t_printf *options, t_fms *fms, char sign_char, char *prefix)
 {
+	int	print_res;
+
 	if (fms->padc == ' ' && !fms->left_adjust)
 	{
 		while (--fms->length >= 0)
-		{
-			options->putc(options, ' ');
-			(*printed)++;
-		}
+			if ((print_res = options->putc(options, ' ')))
+				return (print_res);
 	}
 	if (sign_char)
-	{
-		options->putc(options, sign_char);
-		(*printed)++;
-	}
+		if ((print_res = options->putc(options, sign_char)))
+			return (print_res);
 	if (prefix)
-	{
 		while (*prefix)
-		{
-			options->putc(options, *prefix++);
-			(*printed)++;
-		}
-	}
+			if ((print_res = options->putc(options, *prefix++)))
+				return (print_res);
 	return (0);
 }
 
-static int	print_zeropad(t_printf *options, t_fms *fms, int *printed)
+static int	print_zeropad(t_printf *options, t_fms *fms)
 {
+	int	print_res;
+
 	if (fms->padc == '0')
 	{
 		while (--fms->length >= 0)
-		{
-			options->putc(options, '0');
-			(*printed)++;
-		}
+			if ((print_res = options->putc(options, '0')))
+				return (print_res);
 	}
 	else
 	{
 		while (--fms->precision >= 0)
-		{
-			options->putc(options, '0');
-			(*printed)++;
-		}
+			if ((print_res = options->putc(options, '0')))
+				return (print_res);
 	}
 	return (0);
 }
 
-static int	print_buf_adjust(t_printf *options, t_fms *fms, char *buf_start, char *buf_end, int *printed)
+static int	print_buf_adjust(t_printf *options, t_fms *fms, char *buf_start, char *buf_end)
 {
+	int	print_res;
+
 	while (++buf_start != buf_end)
-	{
-		options->putc(options, *buf_start);
-		(*printed)++;
-	}
+		if ((print_res = options->putc(options, *buf_start)))
+			return (print_res);
 	if (fms->left_adjust)
 	{
 		while (--fms->length >= 0)
-		{
-			options->putc(options, ' ');
-			(*printed)++;
-		}
+			if ((print_res = options->putc(options, ' ')))
+				return (print_res);
 	}
 	return (0);
 }
 
 static int	print_num(uintmax_t u, t_printf *options,
 					  t_fms *fms, int base, int capitals,
-					  char sign_char, int *printed)
+					  char sign_char)
 {
 	char		buffer[INT_BUF_SIZE];
 	char		*p;
@@ -338,15 +330,14 @@ static int	print_num(uintmax_t u, t_printf *options,
 	fms->precision -= num_str_length;
 	prefix = get_prefix(u, fms, base, capitals);
 	fms->length -= get_real_length(num_str_length, sign_char, prefix, fms->precision);
-	print_spacepad_sign_prefix(options, fms, sign_char, prefix, printed);
-	print_zeropad(options, fms, printed);
-	print_buf_adjust(options, fms, p, &buffer[INT_BUF_SIZE], printed);
+	print_spacepad_sign_prefix(options, fms, sign_char, prefix);
+	print_zeropad(options, fms);
+	print_buf_adjust(options, fms, p, &buffer[INT_BUF_SIZE]);
 	return (0);
 }
 
 
-static int	print_signed_integer(t_printf *options, t_fms *fms,
-								int	base, int capitals, int *printed)
+static int	print_signed_integer(t_printf *options, t_fms *fms, int base, int capitals)
 {
 	intmax_t	n;
 	uintmax_t	u;
@@ -376,11 +367,10 @@ static int	print_signed_integer(t_printf *options, t_fms *fms,
 		u = -n;
 		sign_char = '-';
 	}
-	return print_num(u, options, fms, base, capitals, sign_char, printed);
+	return print_num(u, options, fms, base, capitals, sign_char);
 }
 
-static int	print_unsigned_integer(t_printf *options, t_fms *fms,
-								  int base, int capitals, int *printed)
+static int	print_unsigned_integer(t_printf *options, t_fms *fms, int base, int capitals)
 {
 	uintmax_t	u;
 
@@ -398,10 +388,10 @@ static int	print_unsigned_integer(t_printf *options, t_fms *fms,
 		u = va_arg(*options->ap, uintmax_t);
 	else /* if (fms->length_modifier == J) */
 		u = va_arg(*options->ap, size_t);
-	return print_num(u, options, fms, base, capitals, 0, printed);
+	return print_num(u, options, fms, base, capitals, 0);
 }
 
-static int	print_integer(t_printf *options, t_fms *fms, int *printed)
+static int	print_integer(t_printf *options, t_fms *fms)
 {
 	int			base;
 	int			capitals;
@@ -410,9 +400,9 @@ static int	print_integer(t_printf *options, t_fms *fms, int *printed)
 
 	get_base_register_sign(fms->specifier, &base, &capitals, &is_signed);
 	if (is_signed)
-		res = print_signed_integer(options, fms, base, capitals, printed);
+		res = print_signed_integer(options, fms, base, capitals);
 	else
-		res = print_unsigned_integer(options, fms, base, capitals, printed);
+		res = print_unsigned_integer(options, fms, base, capitals);
 	return (res);
 }
 
@@ -429,18 +419,22 @@ static int	is_integer_specifier(char spec)
 	return (0);
 }
 
-static int	print_specifier(t_printf *options, t_fms *fms, int *printed)
+static int	print_percent(t_printf* options, t_fms *fms)
+{
+	(void)options;
+	(void)fms;
+	return (0);
+}
+
+static int	print_specifier(t_printf *options, t_fms *fms)
 {
 	char	spec;
 
 	spec = fms->specifier;
 	if (spec == '%')
-	{
-		if (options->putc(options, '%'))
-			(*printed)++;
-	}
+		return print_percent(options, fms);
 	else if (is_integer_specifier(spec))
-		print_integer(options, fms, printed);
+		return print_integer(options, fms);
 	return (0);
 }
 
@@ -458,27 +452,25 @@ void		set_default_fms(t_fms *fms)
 
 int			_printf(t_printf *options, const char *fmt)
 {
-	int		printed;
+	int		res;
 	char	c;
 	t_fms	fms;
 
-	printed = 0;
 	while ((c = *fmt++) != '\0')
 	{
 		if (c == '%')
 		{
 			set_default_fms(&fms);
 			parse_fms(&fmt, &fms, options->ap);
-			if (print_specifier(options, &fms, &printed))
-				return printed;
+			if ((res = print_specifier(options, &fms)))
+				return (res);
 		}
 		else
 		{
-			if (options->putc(options, c))
-				return printed;
-			printed++;
+			if ((res = options->putc(options, c)))
+				return (res);
 		}
 	}
 	options->flush(options);
-	return (printed);
+	return (0);
 }
