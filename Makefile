@@ -53,8 +53,15 @@ MOCKS_INC :=			$(MOCKS_DIR)
 
 TEST_SRCS :=			$(UNITY_SRCS)					\
 						all_tests.c						\
-						ft_printf_test.c				\
-						ft_printf_test_runner.c
+						ft_dprintf_test.c				\
+						ft_dprintf_test_runner.c		\
+						ft_snprintf_test.c				\
+						ft_snprintf_test_runner.c		\
+						print_integer_test.c			\
+						print_integer_test_runner.c		\
+						print_percent_test.c			\
+						print_percent_test_runner.c		\
+
 
 TEST_REAL_PRINTF :=		real_printf.c					\
 

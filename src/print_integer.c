@@ -205,6 +205,8 @@ int			print_integer(t_printf *options, t_fms *fms)
 	t_boolean	is_signed;
 	int			res;
 
+	if (fms->precision != -1)
+		fms->padc = ' ';
 	get_base_register_sign(fms->specifier, &base, &capitals, &is_signed);
 	if (is_signed)
 		res = print_signed_integer(options, fms, base, capitals);

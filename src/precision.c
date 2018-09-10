@@ -15,7 +15,6 @@ void	parse_precision(const char **fmt, t_fms *fms, va_list *ap)
 	c = **fmt;
 	if (c == '.')
 	{
-		fms->padc = ' ';
 		(*fmt)++;
 		c = **fmt;
 		fms->precision = 0;
