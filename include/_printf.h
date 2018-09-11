@@ -29,7 +29,8 @@ typedef enum			e_specifier_type
 	ST_NONE,
 	ST_PERCENT,
 	ST_INTEGER,
-	ST_CHARACTER
+	ST_CHARACTER,
+	ST_STRING
 }						t_specifier_type;
 
 typedef struct			s_printf
@@ -71,8 +72,9 @@ void					set_length_modifier(t_fms *fms, t_length_modifier modifier);
 void					parse_length_modifier(const char **fmt, t_fms *fms);
 int						is_specifier(char c);
 void					parse_specifier(const char **fmt, t_fms *fms);
-int						print_integer(t_printf *options, t_fms *fms);
 int						print_percent(t_printf* options, t_fms *fms);
 int						print_char(t_printf* options, t_fms *fms);
+int						print_integer(t_printf *options, t_fms *fms);
+int						print_string(t_printf* options, t_fms *fms);
 
 #endif

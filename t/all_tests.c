@@ -8,6 +8,7 @@ static void	RunAllTests(void)
 	RUN_TEST_GROUP(print_percent);
 	RUN_TEST_GROUP(print_integer);
 	RUN_TEST_GROUP(print_char);
+	RUN_TEST_GROUP(print_string);
 }
 
 int			main(int argc, const char **argv)

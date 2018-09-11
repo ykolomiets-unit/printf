@@ -29,6 +29,7 @@ SRCS :=					ft_printf.c					\
 						print_integer.c				\
 						print_percent.c				\
 						print_char.c				\
+						print_string.c				\
 
 
 OBJS :=					$(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
@@ -62,8 +63,10 @@ TEST_SRCS :=			$(UNITY_SRCS)					\
 						print_integer_test_runner.c		\
 						print_percent_test.c			\
 						print_percent_test_runner.c		\
-						print_char_test.c			\
+						print_char_test.c				\
 						print_char_test_runner.c		\
+						print_string_test.c				\
+						print_string_test_runner.c		\
 
 
 TEST_REAL_PRINTF :=		real_printf.c					\
