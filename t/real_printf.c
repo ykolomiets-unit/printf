@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <inttypes.h>
+#include <wchar.h>
 
 int	main(void)
 {
-	printf("intmax_t = %5. h0.6 . 25 lld\n", 10, 5);
+	printf("%ls\n", prt);
 	return (0);
 }

@@ -2,7 +2,7 @@
 
 int		is_specifier(char c)
 {
-	static char	specifiers[] = "%douxiDOUX";
+	static char	specifiers[] = "%cdouxiDOUX";
 	char		*p;
 
 	p = specifiers;
@@ -30,6 +30,13 @@ void	parse_specifier(const char **fmt, t_fms *fms)
 	else if (c == 'd' || c == 'i' || c == 'u' ||
 			c == 'o' || c == 'x' || c == 'X')
 		fms->specifier_type	= ST_INTEGER;
+	else if (c == 'c')
+		fms->specifier_type = ST_CHARACTER;
+	else if (c == 'C')
+	{
+		set_length_modifier(fms, LM_LONG);
+		fms->specifier_type = ST_CHARACTER;
+	}
 	else
 	{
 		fms->specifier_type = ST_NONE;

@@ -10,6 +10,7 @@ static void	set_default_fms(t_fms *fms)
 	fms->plus_sign = 0;
 	fms->length_modifier = LM_NONE;
 	fms->specifier = 0;
+	fms->specifier_type = ST_NONE;
 	fms->length = 0;
 	fms->precision = -1;
 }
@@ -49,6 +50,8 @@ static int	print_specifier(t_printf *options, t_fms *fms)
 		return print_percent(options, fms);
 	else if (spec == ST_INTEGER)
 		return print_integer(options, fms);
+	else if (spec == ST_CHARACTER)
+		return print_char(options, fms);
 	return (0);
 }
 
