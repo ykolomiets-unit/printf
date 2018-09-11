@@ -27,3 +27,35 @@ TEST(print_string, 1)
 	ft_snprintf(buffer, BUF_SIZE, fmt, "test");
 	TEST_ASSERT_EQUAL_STRING("test", buffer);
 }
+
+TEST(print_string, 2)
+{
+	char *fmt = "%.3s";
+	printf(" (%s) \n", fmt);
+	ft_snprintf(buffer, BUF_SIZE, fmt, "test");
+	TEST_ASSERT_EQUAL_STRING("tes", buffer);
+}
+
+TEST(print_string, 3)
+{
+	char *fmt = "%5s";
+	printf(" (%s) \n", fmt);
+	ft_snprintf(buffer, BUF_SIZE, fmt, "test");
+	TEST_ASSERT_EQUAL_STRING(" test", buffer);
+}
+
+TEST(print_string, 4)
+{
+	char *fmt = "%-5s";
+	printf(" (%s) \n", fmt);
+	ft_snprintf(buffer, BUF_SIZE, fmt, "test");
+	TEST_ASSERT_EQUAL_STRING("test ", buffer);
+}
+
+TEST(print_string, 5)
+{
+	char *fmt = "%s";
+	printf(" (%s) \n", fmt);
+	ft_snprintf(buffer, BUF_SIZE, fmt, NULL);
+	TEST_ASSERT_EQUAL_STRING("(null)", buffer);
+}

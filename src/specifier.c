@@ -2,7 +2,7 @@
 
 int		is_specifier(char c)
 {
-	static char	specifiers[] = "%cdouxiDOUX";
+	static char	specifiers[] = "%csdouxiDOUXS";
 	char		*p;
 
 	p = specifiers;
