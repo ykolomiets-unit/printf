@@ -32,10 +32,13 @@ void	parse_specifier(const char **fmt, t_fms *fms)
 		fms->specifier_type = ST_STRING;
 	else if (c == 'p')
 		fms->specifier_type = ST_POINTER;
+	else if (c == '\0')
+		fms->specifier_type = ST_NULL_TERNINATOR;
 	else
 		fms->specifier_type = ST_NONE;
 	if (c == 'U' || c == 'D' || c == 'O' || c == 'C' || c == 'S')
 		set_length_modifier(fms, LM_LONG);
 	fms->specifier = c;
-	(*fmt)++;
+	if (fms->specifier_type != ST_NULL_TERNINATOR)
+		(*fmt)++;
 }

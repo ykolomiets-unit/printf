@@ -27,6 +27,7 @@ typedef	enum			e_length_modifier
 typedef enum			e_specifier_type
 {
 	ST_NONE,
+	ST_NULL_TERNINATOR,
 	ST_PERCENT,
 	ST_INTEGER,
 	ST_CHARACTER,
