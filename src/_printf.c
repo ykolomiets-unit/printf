@@ -30,13 +30,11 @@ static int	parse_fms(const char **fmt, t_fms *fms, va_list *ap)
 			parse_precision(fmt, fms, ap);
 		else if (is_length_modifier_start(c))
 			parse_length_modifier(fmt, fms);
-		else if (is_specifier(c))
+		else
 		{
 			parse_specifier(fmt, fms);
 			break;
 		}
-		else
-			break;
 	} while(c);
 	return (0);
 }
@@ -54,6 +52,10 @@ static int	print_specifier(t_printf *options, t_fms *fms)
 		return print_char(options, fms);
 	else if (spec == ST_STRING)
 		return print_string(options, fms);
+	else if (spec == ST_POINTER)
+		return print_pointer(options, fms);
+	else if (spec == ST_NONE)
+		return print_none_specifier(options, fms);
 	return (0);
 }
 

@@ -1,4 +1,4 @@
-TARGET_LIB :=			libftprintf.a
+NAME :=			libftprintf.a
 
 SRC_DIR :=				./src
 LIB_DIR :=				./lib
@@ -30,6 +30,8 @@ SRCS :=					ft_printf.c					\
 						print_percent.c				\
 						print_char.c				\
 						print_string.c				\
+						print_pointer.c				\
+						print_none_specifier.c		\
 
 
 OBJS :=					$(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
@@ -67,6 +69,8 @@ TEST_SRCS :=			$(UNITY_SRCS)					\
 						print_char_test_runner.c		\
 						print_string_test.c				\
 						print_string_test_runner.c		\
+						print_pointer_test.c				\
+						print_pointer_test_runner.c		\
 
 
 TEST_REAL_PRINTF :=		real_printf.c					\
@@ -83,10 +87,10 @@ CC_FLAGS +=				-Werror
 
 TEST_CC_FLAGS :=		-Wall -Wextra
 
-all: $(TARGET_LIB)
+all: $(NAME)
 
-$(TARGET_LIB): $(OBJS) $(LIBFT)
-	ar rucs $(TARGET_LIB) $(OBJS) $(LIBFT)
+$(NAME): $(OBJS) $(LIBFT)
+	ar rucs $(NAME) $(OBJS) $(LIBFT)
 
 $(OBJS): | $(OBJ_DIR)
 
@@ -103,8 +107,8 @@ test: $(TEST_EXEC)
 	clear
 	./$(TEST_EXEC)
 
-$(TEST_EXEC): $(TARGET_LIB) $(TEST_OBJS)
-	$(CC) $(TEST_OBJS) $(TARGET_LIB) -o $(TEST_EXEC) 
+$(TEST_EXEC): $(NAME) $(TEST_OBJS)
+	$(CC) $(TEST_OBJS) $(NAME) -o $(TEST_EXEC) 
 
 $(TEST_OBJS): | $(TEST_OBJ_DIR)
 
@@ -118,15 +122,15 @@ check_printf: $(TEST_PRINTF_EXEC)
 	clear
 	$(TEST_PRINTF_EXEC)
 
-$(TEST_PRINTF_EXEC): $(TEST_DIR)/$(TEST_REAL_PRINTF)
-	$(CC) $(TEST_DIR)/$(TEST_REAL_PRINTF) -o $(TEST_PRINTF_EXEC)
+$(TEST_PRINTF_EXEC): $(TEST_DIR)/$(TEST_REAL_PRINTF) $(NAME)
+	$(CC) $(TEST_DIR)/$(TEST_REAL_PRINTF) $(NAME) $(INC_FLAGS) -o $(TEST_PRINTF_EXEC)
 
 clean:
 	rm -f $(OBJS)		
 	rm -f $(TEST_OBJS)
 
 fclean: clean
-	rm -f $(TARGET_LIB)
+	rm -f $(NAME)
 	rm -f $(TEST_EXEC)
 	rm -rf $(OBJ_DIR)
 	rm -rf $(TEST_OBJ_DIR)

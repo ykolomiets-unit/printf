@@ -9,6 +9,7 @@ static void	RunAllTests(void)
 	RUN_TEST_GROUP(print_integer);
 	RUN_TEST_GROUP(print_char);
 	RUN_TEST_GROUP(print_string);
+	RUN_TEST_GROUP(print_pointer);
 }
 
 int			main(int argc, const char **argv)

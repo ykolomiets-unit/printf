@@ -40,8 +40,14 @@ static int	num_in_buffer(uintmax_t u, int base, int capitals, char **buf)
 
 static char	*get_prefix(uintmax_t u, t_fms *fms, int base, int capitals)
 {
-	if (base == 8 && fms->altfmt)
+	if (base == 8)
+	{
+		if (!fms->altfmt)
+			return (0);
+		else if (u == 0 && fms->precision == -1)
+			return (0);
 		return ("0");
+	}
 	else if (base == 16)
 	{
 		if (u == 0 || !fms->altfmt)
@@ -129,13 +135,15 @@ static int	print_num(uintmax_t u, t_printf *options,
 	char		*prefix;
 	int			num_str_length;
 	
+	prefix = get_prefix(u, fms, base, capitals);
 	p = &buffer[INT_BUF_SIZE - 1];
 	if (u == 0 && fms->precision == 0)
 		num_str_length = 0;
 	else
 		num_str_length = num_in_buffer(u, base, capitals, &p);
 	fms->precision -= num_str_length;
-	prefix = get_prefix(u, fms, base, capitals);
+	if (base == 8 && fms->altfmt)
+		fms->precision--;
 	fms->length -= get_real_length(num_str_length, sign_char, prefix, fms->precision);
 	print_spacepad_sign_prefix(options, fms, sign_char, prefix);
 	print_zeropad(options, fms);

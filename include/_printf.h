@@ -30,7 +30,8 @@ typedef enum			e_specifier_type
 	ST_PERCENT,
 	ST_INTEGER,
 	ST_CHARACTER,
-	ST_STRING
+	ST_STRING,
+	ST_POINTER,
 }						t_specifier_type;
 
 typedef struct			s_printf
@@ -76,5 +77,7 @@ int						print_percent(t_printf* options, t_fms *fms);
 int						print_char(t_printf* options, t_fms *fms);
 int						print_integer(t_printf *options, t_fms *fms);
 int						print_string(t_printf* options, t_fms *fms);
+int						print_pointer(t_printf* options, t_fms *fms);
+int						print_none_specifier(t_printf* options, t_fms *fms);
 
 #endif
