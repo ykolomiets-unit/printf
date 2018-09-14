@@ -9,4 +9,5 @@ TEST_GROUP_RUNNER(print_string)
 	RUN_TEST_CASE(print_string, 3);
 	RUN_TEST_CASE(print_string, 4);
 	RUN_TEST_CASE(print_string, 5);
+	RUN_TEST_CASE(print_string, 6);
 }

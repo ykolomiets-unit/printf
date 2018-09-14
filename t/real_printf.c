@@ -20,9 +20,7 @@
 int	main(void)
 {
 	setlocale(LC_ALL, "en_US.UTF-8");
-	wchar_t ch = L'ᾲ';
-
-	printf("%C\n", ch);
-	ft_printf("%C\n", ch);
+	printf("{%05p}", 0);
+	ft_printf("{%05p}", 0);
 	return (0);
 }

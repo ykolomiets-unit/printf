@@ -19,7 +19,6 @@ static int	num_in_buffer(long long u, char **buf)
 	return (length);
 }
 
-
 int			print_pointer(t_printf* options, t_fms *fms)
 {
 	int			print_res;
@@ -36,7 +35,7 @@ int			print_pointer(t_printf* options, t_fms *fms)
 		size = num_in_buffer(pointer, &p);
 	fms->precision -= size;
 	fms->length -= (2 + size + (fms->precision > 0 ? fms->precision : 0));
-	if (!fms->left_adjust)
+	if (!fms->left_adjust && fms->padc == ' ')
 		while (--fms->length >= 0)
 			if ((print_res = options->putc(options, ' ')))
 				return (print_res);
@@ -44,6 +43,10 @@ int			print_pointer(t_printf* options, t_fms *fms)
 		return (print_res);
 	if ((print_res = options->putc(options, 'x')))
 		return (print_res);
+	if (!fms->left_adjust && fms->padc == '0')
+		while (--fms->length >= 0)
+			if ((print_res = options->putc(options, '0')))
+				return (print_res);
 	while (--fms->precision >= 0)
 		if ((print_res = options->putc(options, '0')))
 			return (print_res);
