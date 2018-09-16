@@ -2,34 +2,31 @@
 #include "utils.h"
 #include <limits.h>
 
-static int	print_wchar_string(t_printf *options, t_fms *fms)
+static int	get_wchar_string_length(wchar_t *str, int precision)
 {
-	wchar_t	*p1;
-	wchar_t *p2;
-	int		print_res;
-	char	buf[4];
-	int		len;
 	int		str_len;
+	int		ch_len;
 
-	if (!(p1 = va_arg(*options->ap, wchar_t *)))
-		p1 = L"(null)";
-	p2 = p1;
 	str_len = 0;
-	while (*p2 != L'\0' && str_len < fms->precision)
+	while (*str != L'\0' && str_len < precision)
 	{
-		len = wchar_length_in_bytes(*p2);
-		if (str_len + len <= fms->precision)
-			str_len += len;
-		p2++;
+		ch_len = wchar_length_in_bytes(*str);
+		if (str_len + ch_len <= precision)
+			str_len += ch_len;
+		str++;
 	}
-	fms->length -= str_len;
-	if (!fms->left_adjust)
-		while (--fms->length >= 0)
-			if ((print_res = options->putc(options, fms->padc)))
-				return (print_res);
-	while (*p1 != L'\0')
+	return (str_len);
+}
+
+static int	print_wchar_string_core(t_printf *options, t_fms *fms, wchar_t *str)
+{
+	int		len;
+	char	buf[4];
+	int		print_res;
+
+	while (*str != L'\0')
 	{
-		len = wchartobuf(*p1++, buf);
+		len = wchartobuf(*str++, buf);
 		if (len > fms->precision)
 			break;
 		fms->precision -= len;
@@ -37,6 +34,23 @@ static int	print_wchar_string(t_printf *options, t_fms *fms)
 			if ((print_res = options->putc(options, buf[len])))
 				return (print_res);
 	}
+	return (0);
+}
+
+static int	print_wchar_string(t_printf *options, t_fms *fms)
+{
+	wchar_t	*str;
+	int		print_res;
+
+	if (!(str = va_arg(*options->ap, wchar_t *)))
+		str = L"(null)";
+	fms->length -= get_wchar_string_length(str, fms->precision);
+	if (!fms->left_adjust)
+		while (--fms->length >= 0)
+			if ((print_res = options->putc(options, fms->padc)))
+				return (print_res);
+	if ((print_res = print_wchar_string_core(options, fms, str)))
+		return (print_res);
 	if (fms->left_adjust)
 		while (--fms->length >= 0)
 			if ((print_res = options->putc(options, ' ')))

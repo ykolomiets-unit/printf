@@ -20,6 +20,7 @@ SRCS :=					ft_printf.c					\
 						ft_vdprintf.c				\
 						ft_vsnprintf.c				\
 						utils.c						\
+						wchartobuf.c				\
 						_printf.c					\
 						flags.c						\
 						length.c					\

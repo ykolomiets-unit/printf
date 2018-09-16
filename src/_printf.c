@@ -1,7 +1,5 @@
 #include "_printf.h"
 
-#include <stdio.h>
-
 static void	set_default_fms(t_fms *fms)
 {
 	fms->padc = ' ';

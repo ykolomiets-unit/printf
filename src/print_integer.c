@@ -3,23 +3,22 @@
 #include <inttypes.h>
 #include <unistd.h>
 
-static void get_base_register_sign(char spec, int *base,
-									int *capitals, t_boolean *is_signed) 
+static void get_base_register_sign(char spec, t_int_options *opt)
 {
 	if (spec == 'd' || spec == 'D' || spec == 'i' || spec == 'u' || spec == 'U')
-		*base = 10;
+		opt->base = 10;
 	else if (spec == 'x' || spec == 'X')
-		*base = 16;
+		opt->base = 16;
 	else if (spec == 'o' || spec == 'O')
-		*base = 8;
+		opt->base = 8;
 	if (spec == 'X')
-		*capitals = 16;
+		opt->capitals = 16;
 	else
-		*capitals = 0;
+		opt->capitals = 0;
 	if (spec == 'd' || spec == 'D' || spec == 'i')
-		*is_signed = TRUE;
+		opt->is_signed = TRUE;
 	else
-		*is_signed = FALSE;
+		opt->is_signed = FALSE;
 }
 
 static int	num_in_buffer(uintmax_t u, int base, int capitals, char **buf)
@@ -126,66 +125,70 @@ static int	print_buf_adjust(t_printf *options, t_fms *fms, char *buf_start, char
 	return (0);
 }
 
-static int	print_num(uintmax_t u, t_printf *options,
-					  t_fms *fms, int base, int capitals,
-					  char sign_char)
+static int	print_num(uintmax_t u, t_printf *options, t_fms *fms, t_int_options *int_opt)
 {
 	char		buffer[INT_BUF_SIZE];
 	char		*p;
 	char		*prefix;
 	int			num_str_length;
 	
-	prefix = get_prefix(u, fms, base, capitals);
+	prefix = get_prefix(u, fms, int_opt->base, int_opt->capitals);
 	p = &buffer[INT_BUF_SIZE - 1];
 	if (u == 0 && fms->precision == 0)
 		num_str_length = 0;
 	else
-		num_str_length = num_in_buffer(u, base, capitals, &p);
+		num_str_length = num_in_buffer(u, int_opt->base, int_opt->capitals, &p);
 	fms->precision -= num_str_length;
-	if (base == 8 && fms->altfmt)
+	if (int_opt->base == 8 && fms->altfmt)
 		fms->precision--;
-	fms->length -= get_real_length(num_str_length, sign_char, prefix, fms->precision);
-	print_spacepad_sign_prefix(options, fms, sign_char, prefix);
+	fms->length -= get_real_length(num_str_length, int_opt->sign_char, prefix, fms->precision);
+	print_spacepad_sign_prefix(options, fms, int_opt->sign_char, prefix);
 	print_zeropad(options, fms);
 	print_buf_adjust(options, fms, p, &buffer[INT_BUF_SIZE]);
 	return (0);
 }
 
+static intmax_t	get_signed_arg(va_list *ap, t_length_modifier length_modifier)
+{
+	intmax_t n;
 
-static int	print_signed_integer(t_printf *options, t_fms *fms, int base, int capitals)
+	if (length_modifier == LM_NONE)
+		n = va_arg(*ap, int);
+	else if (length_modifier == LM_LONG)
+		n = va_arg(*ap, long);
+	else if (length_modifier == LM_LONG_LONG)
+		n = va_arg(*ap, long long);
+	else if (length_modifier == LM_SHORT)
+		n = (short) va_arg(*ap, int);
+	else if (length_modifier == LM_SHORT_SHORT)
+		n = (signed char) va_arg(*ap, int);
+	else if (length_modifier == LM_J)
+		n = va_arg(*ap, intmax_t);
+	else /*length_modifier == Z*/
+		n = va_arg(*ap, ssize_t);
+	return (n);
+}
+
+static int	print_signed_integer(t_printf *options, t_fms *fms, t_int_options *int_opt)
 {
 	intmax_t	n;
 	uintmax_t	u;
-	char		sign_char;
-	
-	if (fms->length_modifier == LM_NONE)
-		n = va_arg(*options->ap, int);
-	else if (fms->length_modifier == LM_LONG)
-		n = va_arg(*options->ap, long);
-	else if (fms->length_modifier == LM_LONG_LONG)
-		n = va_arg(*options->ap, long long);
-	else if (fms->length_modifier == LM_SHORT)
-		n = (short) va_arg(*options->ap, int);
-	else if (fms->length_modifier == LM_SHORT_SHORT)
-		n = (signed char) va_arg(*options->ap, int);
-	else if (fms->length_modifier == LM_J)
-		n = va_arg(*options->ap, intmax_t);
-	else /*length_modifier == Z*/
-		n = va_arg(*options->ap, ssize_t);
+
+	n = get_signed_arg(options->ap, fms->length_modifier);
 	if (n >= 0)
 	{
 		u = n;
-		sign_char = fms->plus_sign;
+		int_opt->sign_char = fms->plus_sign;
 	}
 	else
 	{
 		u = -n;
-		sign_char = '-';
+		int_opt->sign_char = '-';
 	}
-	return print_num(u, options, fms, base, capitals, sign_char);
+	return print_num(u, options, fms, int_opt);
 }
 
-static int	print_unsigned_integer(t_printf *options, t_fms *fms, int base, int capitals)
+static int	print_unsigned_integer(t_printf *options, t_fms *fms, t_int_options *int_opt)
 {
 	uintmax_t	u;
 
@@ -203,22 +206,21 @@ static int	print_unsigned_integer(t_printf *options, t_fms *fms, int base, int c
 		u = va_arg(*options->ap, uintmax_t);
 	else /* if (fms->length_modifier == J) */
 		u = va_arg(*options->ap, size_t);
-	return print_num(u, options, fms, base, capitals, 0);
+	int_opt->sign_char = 0;
+	return print_num(u, options, fms, int_opt);
 }
 
 int			print_integer(t_printf *options, t_fms *fms)
 {
-	int			base;
-	int			capitals;
-	t_boolean	is_signed;
-	int			res;
+	int				res;
+	t_int_options	int_opt;
 
 	if (fms->precision != -1)
 		fms->padc = ' ';
-	get_base_register_sign(fms->specifier, &base, &capitals, &is_signed);
-	if (is_signed)
-		res = print_signed_integer(options, fms, base, capitals);
+	get_base_register_sign(fms->specifier, &int_opt);
+	if (int_opt.is_signed)
+		return (print_signed_integer(options, fms, &int_opt));
 	else
-		res = print_unsigned_integer(options, fms, base, capitals);
+		return (print_unsigned_integer(options, fms, &int_opt));
 	return (res);
 }

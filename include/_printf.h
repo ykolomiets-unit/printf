@@ -61,6 +61,14 @@ typedef struct			s_fms
 	int					precision;
 }						t_fms;
 
+typedef struct			s_int_options
+{
+	int					base;
+	int					capitals;
+	t_boolean			is_signed;
+	char				sign_char;
+}						t_int_options;
+
 int						_printf(t_printf *options, const char *fmt);
 
 int						is_flag(char c);
