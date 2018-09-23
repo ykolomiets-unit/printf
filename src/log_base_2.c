@@ -2,9 +2,9 @@
 
 # define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
 
-t_u32 log_base_2(t_u32 val)
+uint32_t log_base_2(uint32_t val)
 {
-	static const t_u8 log_table[256] = 
+	static const uint8_t	log_table[256] = 
 	{
 		0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
 		LT(4),
@@ -12,7 +12,7 @@ t_u32 log_base_2(t_u32 val)
 		LT(6), LT(6), LT(6), LT(6), 
 		LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7),
 	};
-	t_u32	temp;
+	uint32_t				temp;
 
 	temp = val >> 24;
 	if (temp)

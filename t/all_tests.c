@@ -11,6 +11,7 @@ static void	RunAllTests(void)
 	//RUN_TEST_GROUP(print_string);
 	//RUN_TEST_GROUP(print_pointer);
 	RUN_TEST_GROUP(dragon4_log_base_2);
+	RUN_TEST_GROUP(big_int);
 }
 
 int			main(int argc, const char **argv)
