@@ -9,7 +9,8 @@ INC_DIR :=				./include
 
 HEADERS :=				ft_printf.h					\
 						_printf.h					\
-						utils.h						
+						utils.h						\
+						dragon4.h					\
 
 HEADERS_DEP :=			$(addprefix $(INC_DIR)/, $(HEADERS))
 
@@ -33,6 +34,7 @@ SRCS :=					ft_printf.c					\
 						print_string.c				\
 						print_pointer.c				\
 						print_none_specifier.c		\
+						log_base_2.c				\
 
 
 OBJS :=					$(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
@@ -70,8 +72,10 @@ TEST_SRCS :=			$(UNITY_SRCS)					\
 						print_char_test_runner.c		\
 						print_string_test.c				\
 						print_string_test_runner.c		\
-						print_pointer_test.c				\
+						print_pointer_test.c			\
 						print_pointer_test_runner.c		\
+						dragon4_log_base_2_test.c		\
+						dragon4_log_base_2_test_runner.c \
 
 
 TEST_REAL_PRINTF :=		real_printf.c					\
