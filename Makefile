@@ -37,6 +37,7 @@ SRCS :=					ft_printf.c					\
 						print_none_specifier.c		\
 						log_base_2.c				\
 						big_int.c					\
+						big_int_addition.c			\
 
 
 OBJS :=					$(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))

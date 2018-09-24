@@ -14,4 +14,8 @@ TEST_GROUP_RUNNER(big_int)
 	RUN_TEST_CASE(big_int, compare_equal);
 	RUN_TEST_CASE(big_int, compare_with_different_lengths);
 	RUN_TEST_CASE(big_int, compare_with_same_lengths);
+	RUN_TEST_CASE(big_int, add_zeroes);
+	RUN_TEST_CASE(big_int, add_small_numbers);
+	RUN_TEST_CASE(big_int, add_big_numbers);
+	RUN_TEST_CASE(big_int, add_with_different_length);
 }

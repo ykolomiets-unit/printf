@@ -19,5 +19,6 @@ void		bi_set_u32(t_big_int *big_int, uint32_t val);
 void		bi_set_u64(t_big_int *big_int, uint64_t val);
 uint32_t	bi_get_u32(t_big_int *big_int);
 int			bi_compare(t_big_int *left, t_big_int *right);
+void		bi_add(t_big_int *result, t_big_int *left, t_big_int *right);
 
 #endif
