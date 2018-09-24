@@ -10,4 +10,8 @@ TEST_GROUP_RUNNER(big_int)
 	RUN_TEST_CASE(big_int, set_u64_zero);
 	RUN_TEST_CASE(big_int, set_u64_lt_0xffffffff);
 	RUN_TEST_CASE(big_int, set_u64_gt_0xffffffff);
+	RUN_TEST_CASE(big_int, compare_zero_with_zero);
+	RUN_TEST_CASE(big_int, compare_equal);
+	RUN_TEST_CASE(big_int, compare_with_different_lengths);
+	RUN_TEST_CASE(big_int, compare_with_same_lengths);
 }
