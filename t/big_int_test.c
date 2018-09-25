@@ -176,3 +176,111 @@ TEST(big_int, add_with_different_length)
 	TEST_ASSERT_EQUAL_UINT32(0x00000000, result.blocks[1]);
 	TEST_ASSERT_EQUAL_UINT32(0xfffffffe, result.blocks[0]);
 }
+
+TEST(big_int, mult_bi_by_bi_1)
+{
+	t_big_int	bi1;
+	t_big_int	bi2;
+	t_big_int	result;
+
+	bi_set_u64(&bi1, 0x2);
+	bi_set_u64(&bi2, 0xffffffffffffffff);
+	bi_mult_bi_by_bi(&result, &bi1, &bi2);
+	TEST_ASSERT_EQUAL_UINT32(3, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x1, result.blocks[2]);
+	TEST_ASSERT_EQUAL_UINT32(0xffffffff, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0xfffffffe, result.blocks[0]);
+}
+
+TEST(big_int, mult_bi_by_bi_2)
+{
+	t_big_int	bi1;
+	t_big_int	bi2;
+	t_big_int	result;
+
+	bi_set_u64(&bi1, 0xffffff);
+	bi_set_u64(&bi2, 0xffff);
+	bi_mult_bi_by_bi(&result, &bi1, &bi2);
+	TEST_ASSERT_EQUAL_UINT32(2, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0xff, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0xfeff0001, result.blocks[0]);
+}
+
+TEST(big_int, mult_bi_by_int)
+{
+	t_big_int	bi1;
+	t_big_int	result;
+
+	bi_set_u64(&bi1, 0xffffff);
+	bi_mult_bi_by_uint32(&result, &bi1, 0xffff);
+	TEST_ASSERT_EQUAL_UINT32(2, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0xff, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0xfeff0001, result.blocks[0]);
+}
+
+TEST(big_int, mult_bi_by_2_without_carry)
+{
+	t_big_int	bi1;
+	t_big_int	result;
+
+	bi_set_u64(&bi1, 0xff);
+	bi_mult_bi_by_2(&result, &bi1);
+	TEST_ASSERT_EQUAL_UINT32(1, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x1fe, result.blocks[0]);
+}
+
+TEST(big_int, mult_bi_by_2_with_carry)
+{
+	t_big_int	bi1;
+	t_big_int	result;
+
+	bi_set_u64(&bi1, 0xffffffff);
+	bi_mult_bi_by_2(&result, &bi1);
+	TEST_ASSERT_EQUAL_UINT32(2, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x1, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0xfffffffe, result.blocks[0]);
+}
+
+TEST(big_int, mult_bi_by_2_in_place_without_carry)
+{
+	t_big_int	result;
+
+	bi_set_u64(&result, 0xffff);
+	bi_mult_bi_by_2_inplace(&result);
+	TEST_ASSERT_EQUAL_UINT32(1, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x1fffe, result.blocks[0]);
+}
+
+TEST(big_int, mult_bi_by_2_in_place_with_carry)
+{
+	t_big_int	result;
+
+	bi_set_u64(&result, 0xffffffffffffffff);
+	bi_mult_bi_by_2_inplace(&result);
+	TEST_ASSERT_EQUAL_UINT32(3, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x1, result.blocks[2]);
+	TEST_ASSERT_EQUAL_UINT32(0xffffffff, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0xfffffffe, result.blocks[0]);
+}
+
+TEST(big_int, mult_bi_by_10_in_place_without_carry)
+{
+	t_big_int	result;
+
+	bi_set_u64(&result, 0xffffff);
+	bi_mult_bi_by_10_inplace(&result);
+	TEST_ASSERT_EQUAL_UINT32(1, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x9fffff6, result.blocks[0]);
+}
+
+TEST(big_int, mult_bi_by_10_in_place_with_carry)
+{
+	t_big_int	result;
+
+	bi_set_u64(&result, 0xffffffffffffffff);
+	bi_mult_bi_by_10_inplace(&result);
+	TEST_ASSERT_EQUAL_UINT32(3, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x9, result.blocks[2]);
+	TEST_ASSERT_EQUAL_UINT32(0xffffffff, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0xfffffff6, result.blocks[0]);
+}

@@ -18,4 +18,13 @@ TEST_GROUP_RUNNER(big_int)
 	RUN_TEST_CASE(big_int, add_small_numbers);
 	RUN_TEST_CASE(big_int, add_big_numbers);
 	RUN_TEST_CASE(big_int, add_with_different_length);
+	RUN_TEST_CASE(big_int, mult_bi_by_bi_1);
+	RUN_TEST_CASE(big_int, mult_bi_by_bi_2);
+	RUN_TEST_CASE(big_int, mult_bi_by_int);
+	RUN_TEST_CASE(big_int, mult_bi_by_2_without_carry);
+	RUN_TEST_CASE(big_int, mult_bi_by_2_with_carry);
+	RUN_TEST_CASE(big_int, mult_bi_by_2_in_place_without_carry);
+	RUN_TEST_CASE(big_int, mult_bi_by_2_in_place_with_carry);
+	RUN_TEST_CASE(big_int, mult_bi_by_10_in_place_without_carry);
+	RUN_TEST_CASE(big_int, mult_bi_by_10_in_place_with_carry);
 }
