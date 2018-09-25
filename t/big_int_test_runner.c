@@ -27,4 +27,7 @@ TEST_GROUP_RUNNER(big_int)
 	RUN_TEST_CASE(big_int, mult_bi_by_2_in_place_with_carry);
 	RUN_TEST_CASE(big_int, mult_bi_by_10_in_place_without_carry);
 	RUN_TEST_CASE(big_int, mult_bi_by_10_in_place_with_carry);
+	RUN_TEST_CASE(big_int, pow10_5);
+	RUN_TEST_CASE(big_int, pow10_25);
+	RUN_TEST_CASE(big_int, pow10_32);
 }

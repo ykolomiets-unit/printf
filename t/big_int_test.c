@@ -284,3 +284,35 @@ TEST(big_int, mult_bi_by_10_in_place_with_carry)
 	TEST_ASSERT_EQUAL_UINT32(0xffffffff, result.blocks[1]);
 	TEST_ASSERT_EQUAL_UINT32(0xfffffff6, result.blocks[0]);
 }
+
+TEST(big_int, pow10_5)
+{
+	t_big_int	result;
+
+	bi_pow10(&result, 5);
+	TEST_ASSERT_EQUAL_UINT32(1, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x186a0, result.blocks[0]);
+}
+
+TEST(big_int, pow10_25)
+{
+	t_big_int	result;
+
+	bi_pow10(&result, 25);
+	TEST_ASSERT_EQUAL_UINT32(3, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x84595, result.blocks[2]);
+	TEST_ASSERT_EQUAL_UINT32(0x16140148, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0x4A000000, result.blocks[0]);
+}
+
+TEST(big_int, pow10_32)
+{
+	t_big_int	result;
+
+	bi_pow10(&result, 32);
+	TEST_ASSERT_EQUAL_UINT32(4, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x4EE, result.blocks[3]);
+	TEST_ASSERT_EQUAL_UINT32(0x2D6D415B, result.blocks[2]);
+	TEST_ASSERT_EQUAL_UINT32(0x85ACEF81, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0x00000000, result.blocks[0]);
+}

@@ -39,6 +39,7 @@ SRCS :=					ft_printf.c					\
 						big_int.c					\
 						big_int_addition.c			\
 						big_int_multiplication.c	\
+						big_int_exponentiation.c	\
 
 
 OBJS :=					$(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
@@ -100,8 +101,8 @@ TEST_CC_FLAGS :=		-Wall -Wextra
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT)
-	ar rucs $(NAME) $(OBJS) $(LIBFT)
+$(NAME): $(OBJS)
+	ar rucs $(NAME) $(OBJS)
 
 $(OBJS): | $(OBJ_DIR)
 
@@ -110,9 +111,6 @@ $(OBJ_DIR):
 
 $(OBJ_DIR)/%.o: %.c $(HEADERS_DEP)
 	$(CC) -c $< -o $@ $(CC_FLAGS) $(INC_FLAGS) $(LINK_FLAGS)
-
-$(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
 
 test: $(TEST_EXEC)
 	clear

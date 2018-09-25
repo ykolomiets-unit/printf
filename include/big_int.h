@@ -9,8 +9,8 @@ typedef	int		t_boolean;
 
 typedef	struct	s_big_int
 {
-	uint32_t	blocks[BIG_INT_MAX_BLOCK];
 	uint32_t	length;
+	uint32_t	blocks[BIG_INT_MAX_BLOCK];
 }				t_big_int;
 
 void		bi_set_zero(t_big_int *big_int);
@@ -25,5 +25,6 @@ void		bi_mult_bi_by_uint32(t_big_int *result, t_big_int *left, uint32_t right);
 void		bi_mult_bi_by_2(t_big_int *result, t_big_int *in);
 void		bi_mult_bi_by_2_inplace(t_big_int *result);
 void		bi_mult_bi_by_10_inplace(t_big_int *result);
+void		bi_pow10(t_big_int *result, uint32_t exponent);
 
 #endif
