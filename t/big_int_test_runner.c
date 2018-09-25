@@ -30,4 +30,8 @@ TEST_GROUP_RUNNER(big_int)
 	RUN_TEST_CASE(big_int, pow10_5);
 	RUN_TEST_CASE(big_int, pow10_25);
 	RUN_TEST_CASE(big_int, pow10_32);
+	RUN_TEST_CASE(big_int, mult_pow10_2);
+	RUN_TEST_CASE(big_int, mult_pow10_9);
+	RUN_TEST_CASE(big_int, pow2_2);
+	RUN_TEST_CASE(big_int, pow2_127);
 }

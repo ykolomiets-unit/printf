@@ -316,3 +316,48 @@ TEST(big_int, pow10_32)
 	TEST_ASSERT_EQUAL_UINT32(0x85ACEF81, result.blocks[1]);
 	TEST_ASSERT_EQUAL_UINT32(0x00000000, result.blocks[0]);
 }
+
+TEST(big_int, mult_pow10_2)
+{
+	t_big_int	result;
+	t_big_int	bi;
+
+	bi_set_u32(&bi, 0xff00ff00);
+	bi_mult_by_pow10(&result, &bi, 2);
+	TEST_ASSERT_EQUAL_UINT32(2, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x63, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0x9C639C00, result.blocks[0]);
+}
+
+TEST(big_int, mult_pow10_9)
+{
+	t_big_int	result;
+	t_big_int	bi;
+
+	bi_set_u32(&bi, 0xff00ff00);
+	bi_mult_by_pow10(&result, &bi, 9);
+	TEST_ASSERT_EQUAL_UINT32(2, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x3B5F6A95, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0x2F360000, result.blocks[0]);
+}
+
+TEST(big_int, pow2_2)
+{
+	t_big_int	result;
+
+	bi_pow2(&result, 2);
+	TEST_ASSERT_EQUAL_UINT32(1, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x4, result.blocks[0]);
+}
+
+TEST(big_int, pow2_127)
+{
+	t_big_int	result;
+
+	bi_pow2(&result, 127);
+	TEST_ASSERT_EQUAL_UINT32(4, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x80000000, result.blocks[3]);
+	TEST_ASSERT_EQUAL_UINT32(0, result.blocks[2]);
+	TEST_ASSERT_EQUAL_UINT32(0, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0, result.blocks[0]);
+}
