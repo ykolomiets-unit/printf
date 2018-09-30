@@ -361,3 +361,24 @@ TEST(big_int, pow2_127)
 	TEST_ASSERT_EQUAL_UINT32(0, result.blocks[1]);
 	TEST_ASSERT_EQUAL_UINT32(0, result.blocks[0]);
 }
+
+TEST(big_int, shift_left_1)
+{
+	t_big_int	result;
+
+	bi_set_u64(&result, 0x00ffffff);
+	bi_shift_left(&result, 1);
+	TEST_ASSERT_EQUAL_UINT32(1, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x01fffffe, result.blocks[0]);
+}
+
+TEST(big_int, shift_left_32)
+{
+	t_big_int	result;
+
+	bi_set_u64(&result, 0x00ffffff);
+	bi_shift_left(&result, 32);
+	TEST_ASSERT_EQUAL_UINT32(2, result.length);
+	TEST_ASSERT_EQUAL_UINT32(0x00ffffff, result.blocks[1]);
+	TEST_ASSERT_EQUAL_UINT32(0x0, result.blocks[0]);
+}
