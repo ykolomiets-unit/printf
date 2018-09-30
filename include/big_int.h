@@ -28,5 +28,6 @@ void			bi_mult_bi_by_10_inplace(t_big_int *result);
 void			bi_pow10(t_big_int *result, uint32_t exponent);
 void			bi_mult_by_pow10(t_big_int *result, t_big_int *in, uint32_t exponent);
 void			bi_pow2(t_big_int *result, uint32_t exponent);
+uint32_t		bi_divide_with_remainder_maxquotient9(t_big_int	*dividend, t_big_int *divisor);
 
 #endif
