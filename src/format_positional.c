@@ -1,7 +1,7 @@
 #include "dragon4.h"
 #include "utils.h"
 
-static t_dragon4_arg	form_dragon4_arg_gt_0(t_format_arg *arg, int32_t *print_exponent)
+static t_dragon4_arg	form_dragon4_arg_lt_0(t_format_arg *arg, int32_t *print_exponent)
 {
 	t_dragon4_arg	dragon4_arg;
 
@@ -17,7 +17,7 @@ static t_dragon4_arg	form_dragon4_arg_gt_0(t_format_arg *arg, int32_t *print_exp
 	return (dragon4_arg);
 }
 
-static t_dragon4_arg	form_dragon4_arg_lte_0(t_format_arg *arg, int32_t *print_exponent)
+static t_dragon4_arg	form_dragon4_arg_gte_0(t_format_arg *arg, int32_t *print_exponent)
 {
 	t_dragon4_arg	dragon4_arg;
 
@@ -45,7 +45,7 @@ static void	help1(t_format_arg *arg, int32_t print_exponent,
 		if (num_whole_digits > arg->buffer_size - 1)
 			num_whole_digits = arg->buffer_size - 1;
 		while (*num_print_digits < num_whole_digits)
-			arg->out_buffer[++(*num_print_digits)] = '0';
+			arg->out_buffer[(*num_print_digits)++] = '0';
 	}
 	else if (*num_print_digits > num_whole_digits)
 	{
@@ -109,10 +109,10 @@ uint32_t	format_positional(t_format_arg arg)
 	uint32_t		num_fraction_digits;
 	uint32_t		total_digits;
 
-	if (arg.precision > 0)
-		num_print_digits = dragon4(form_dragon4_arg_gt_0(&arg, &print_exponent));
+	if (arg.precision < 0)
+		num_print_digits = dragon4(form_dragon4_arg_lt_0(&arg, &print_exponent));
 	else
-		num_print_digits = dragon4(form_dragon4_arg_lte_0(&arg, &print_exponent));
+		num_print_digits = dragon4(form_dragon4_arg_gte_0(&arg, &print_exponent));
 	num_fraction_digits = 0;
 	if (print_exponent >= 0)
 		help1(&arg, print_exponent, &num_print_digits, &num_fraction_digits);
@@ -121,7 +121,7 @@ uint32_t	format_positional(t_format_arg arg)
 	if (arg.precision > (int32_t)num_fraction_digits && num_print_digits < (arg.buffer_size - 1))
 	{
 		if (num_fraction_digits == 0)
-			arg.out_buffer[num_fraction_digits++] = '.';
+			arg.out_buffer[num_print_digits++] = '.';
 		total_digits = num_print_digits + (arg.precision - num_fraction_digits);
 		if (total_digits > arg.buffer_size - 1)
 			total_digits = arg.buffer_size - 1;

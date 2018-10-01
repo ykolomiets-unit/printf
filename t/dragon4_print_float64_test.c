@@ -21,12 +21,74 @@ TEST_TEAR_DOWN(dragon4_print_float64)
 {
 }
 
-TEST(dragon4_print_float64, positional)
+TEST(dragon4_print_float64, 100_positional)
 {
 	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
-	arg.value = -0.231231231231231;
+	arg.value = 100;
+	arg.precision = 0;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("100", buffer);
+}
+
+TEST(dragon4_print_float64, 12345_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	arg.value = 12345;
+	arg.precision = 0;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("12345", buffer);
+}
+
+TEST(dragon4_print_float64, 1234567890_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	arg.value = 1234567890;
+	arg.precision = 0;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("1234567890", buffer);
+}
+
+TEST(dragon4_print_float64, negative_100_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	arg.value = -100;
+	arg.precision = 0;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("-100", buffer);
+}
+
+TEST(dragon4_print_float64, 0_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	arg.value = 0;
+	arg.precision = 0;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("0", buffer);
+}
+
+TEST(dragon4_print_float64, 0_123456_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	arg.value = 0.123456;
 	arg.precision = 6;
 	print_float64(arg);
-	printf("\n%s\n", buffer);
-	printf("%f\n", arg.value);
+	TEST_ASSERT_EQUAL_STRING("0.123456", buffer);
+}
+
+TEST(dragon4_print_float64, 0_123453_precision5_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	arg.value = 0.123453;
+	arg.precision = 5;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("0.12345", buffer);
+}
+
+TEST(dragon4_print_float64, 0_123456_precision5_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	arg.value = 0.123456;
+	arg.precision = 5;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("0.12346", buffer);
 }
