@@ -2,7 +2,7 @@
 
 # define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
 
-uint32_t log_base_2(uint32_t val)
+uint32_t	log_base_2_uint32(uint32_t val)
 {
 	static const uint8_t	log_table[256] = 
 	{
@@ -24,4 +24,14 @@ uint32_t log_base_2(uint32_t val)
 	if (temp)
 		return (8 + log_table[temp]);
 	return (log_table[val]);
+}
+
+uint32_t	log_base_2_uint64(uint64_t val)
+{
+	uint64_t	temp;
+
+	temp = val >> 32;
+	if (temp)
+		return (32 + log_base_2_uint32((uint32_t)temp));
+	return (log_base_2_uint32((uint32_t)val));
 }

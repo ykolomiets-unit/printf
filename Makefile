@@ -12,6 +12,8 @@ HEADERS :=				ft_printf.h					\
 						utils.h						\
 						dragon4.h					\
 						big_int.h					\
+						big_int.h					\
+						float_to_integer_conversion.h	\
 
 HEADERS_DEP :=			$(addprefix $(INC_DIR)/, $(HEADERS))
 
@@ -42,6 +44,12 @@ SRCS :=					ft_printf.c					\
 						big_int_exponentiation.c	\
 						big_int_division.c			\
 						big_int_shift_left.c		\
+						dragon4.c					\
+						float32_to_integer_conversion.c	\
+						float64_to_integer_conversion.c	\
+						format_positional.c			\
+						print_float64.c				\
+					
 
 
 OBJS :=					$(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
@@ -85,6 +93,8 @@ TEST_SRCS :=			$(UNITY_SRCS)					\
 						dragon4_log_base_2_test_runner.c \
 						big_int_test.c					\
 						big_int_test_runner.c			\
+						dragon4_print_float64_test.c	\
+						dragon4_print_float64_test_runner.c \
 
 
 TEST_REAL_PRINTF :=		real_printf.c					\

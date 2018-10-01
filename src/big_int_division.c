@@ -30,7 +30,7 @@ static void		divide_out_estimated_quotient(t_big_int *dividend, t_big_int *divis
 		divisor_cur++;
 		dividend_cur++;
 	} while(divisor_cur <= final_divisor_block);
-	while (dividend->length > 0 && dividend->blocks[dividend->length - 1])
+	while (dividend->length > 0 && dividend->blocks[dividend->length - 1] == 0)
 		dividend->length--;
 }
 
@@ -68,7 +68,7 @@ uint32_t		bi_divide_with_remainder_maxquotient9(t_big_int	*dividend, t_big_int *
 		return (0);
 	final_divisor_block = divisor->blocks + divisor->length - 1;
 	final_dividend_block = dividend->blocks + dividend->length - 1;
-	quotient = *final_dividend_block / (*final_dividend_block + 1);
+	quotient = *final_dividend_block / (*final_divisor_block + 1);
 	if (quotient != 0)
 		divide_out_estimated_quotient(dividend, divisor, quotient);
 	if (bi_compare(dividend, divisor) >= 0)
