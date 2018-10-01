@@ -36,7 +36,7 @@ typedef struct		s_print_float64_arg
 {
 	char			*out_buffer;
 	uint32_t		buffer_size;
-	float			value;
+	double			value;
 	t_print_float_format format;
 	int32_t			precision;
 }					t_print_float64_arg;

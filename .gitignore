@@ -9,3 +9,7 @@ t/printf_test
 
 *.swp
 *DS_Store
+
+.idea/
+cmake-build-debug/
+CMakeLists.txt

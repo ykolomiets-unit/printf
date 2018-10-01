@@ -45,7 +45,6 @@ SRCS :=					ft_printf.c					\
 						big_int_division.c			\
 						big_int_shift_left.c		\
 						dragon4.c					\
-						float32_to_integer_conversion.c	\
 						float64_to_integer_conversion.c	\
 						format_positional.c			\
 						print_float64.c				\
