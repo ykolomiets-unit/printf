@@ -48,6 +48,7 @@ SRCS :=					ft_printf.c					\
 						float64_to_integer_conversion.c	\
 						format_positional.c			\
 						print_float64.c				\
+						print_inf_nan.c				\
 					
 
 

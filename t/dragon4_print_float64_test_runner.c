@@ -12,4 +12,8 @@ TEST_GROUP_RUNNER(dragon4_print_float64)
 	RUN_TEST_CASE(dragon4_print_float64, 0_123456_positional);
 	RUN_TEST_CASE(dragon4_print_float64, 0_123453_precision5_positional);
 	RUN_TEST_CASE(dragon4_print_float64, 0_123456_precision5_positional);
+	RUN_TEST_CASE(dragon4_print_float64, positive_infinity_positional);
+	RUN_TEST_CASE(dragon4_print_float64, negative_infinity_positional);
+	RUN_TEST_CASE(dragon4_print_float64, positive_nan_positional);
+	RUN_TEST_CASE(dragon4_print_float64, negative_nan_positional);
 }

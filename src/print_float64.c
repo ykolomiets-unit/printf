@@ -65,7 +65,7 @@ uint32_t			print_float64(t_print_float64_arg arg)
 	parse_double(arg.value, &negative, &float_exponent, &float_mantissa);
 	set_sign(&arg, negative, &prefix_length);
 	if (float_exponent == 0x7ff)
-		return (0); // TODO: infinity
+		return (print_inf_nan(arg.out_buffer, arg.buffer_size, float_mantissa) + prefix_length);
 	format_arg = get_format_arg(&arg, float_exponent, float_mantissa);
 	if (arg.format == PRINT_FLOAT_FORMAT_POSITIONAL)
 		return (format_positional(format_arg) + prefix_length);

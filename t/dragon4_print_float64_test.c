@@ -92,3 +92,41 @@ TEST(dragon4_print_float64, 0_123456_precision5_positional)
 	print_float64(arg);
 	TEST_ASSERT_EQUAL_STRING("0.12346", buffer);
 }
+
+TEST(dragon4_print_float64, positive_infinity_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	arg.value = INFINITY;
+	arg.precision = 0;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("inf", buffer);
+}
+
+TEST(dragon4_print_float64, negative_infinity_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	arg.value = -INFINITY;
+	arg.precision = 0;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("-inf", buffer);
+}
+
+TEST(dragon4_print_float64, positive_nan_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	uint64_t inf = 0x7ff0001000000000;
+	arg.value = *((double*)&inf);
+	arg.precision = 0;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("nan", buffer);
+}
+
+TEST(dragon4_print_float64, negative_nan_positional)
+{
+	arg.format = PRINT_FLOAT_FORMAT_POSITIONAL;
+	uint64_t inf = 0xfff0001000000000;
+	arg.value = *((double*)&inf);
+	arg.precision = 0;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("-nan", buffer);
+}
