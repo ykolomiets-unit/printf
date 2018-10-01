@@ -57,6 +57,7 @@ uint32_t			log_base_2_uint32(uint32_t val);
 uint32_t			log_base_2_uint64(uint64_t val);
 
 uint32_t			format_positional(t_format_arg arg);
+uint32_t			format_scientific(t_format_arg arg);
 uint32_t 			print_inf_nan(char *buffer, uint32_t buffer_size, uint64_t mantissa);
 
 uint32_t			print_float64(t_print_float64_arg arg);

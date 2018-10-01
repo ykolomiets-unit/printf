@@ -130,3 +130,81 @@ TEST(dragon4_print_float64, negative_nan_positional)
 	print_float64(arg);
 	TEST_ASSERT_EQUAL_STRING("-nan", buffer);
 }
+
+TEST(dragon4_print_float64, 100_scientific)
+{
+	arg.format = PRINT_FLOAT_FORMAT_SCIENTIFIC;
+	arg.value = 100;
+	arg.precision = 6;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("100", buffer);
+}
+
+TEST(dragon4_print_float64, 12345_scientific)
+{
+	arg.format = PRINT_FLOAT_FORMAT_SCIENTIFIC;
+	arg.value = 12345;
+	arg.precision = 6;
+	print_float64(arg);
+	TEST_ASSERT_EQUAL_STRING("12345", buffer);
+}
+
+TEST(dragon4_print_float64, 1234567890_scientific)
+{
+	arg.format = PRINT_FLOAT_FORMAT_SCIENTIFIC;
+	arg.value = 1234567890;
+	arg.precision = 6;
+	print_float64(arg);
+	printf("\n%e\n", arg.value);
+	TEST_ASSERT_EQUAL_STRING("1234567890", buffer);
+}
+
+TEST(dragon4_print_float64, negative_100_scientific)
+{
+	arg.format = PRINT_FLOAT_FORMAT_SCIENTIFIC;
+	arg.value = -100;
+	arg.precision = 6;
+	print_float64(arg);
+	printf("\n%e\n", arg.value);
+	TEST_ASSERT_EQUAL_STRING("-100", buffer);
+}
+
+TEST(dragon4_print_float64, 0_scientific)
+{
+	arg.format = PRINT_FLOAT_FORMAT_SCIENTIFIC;
+	arg.value = 0;
+	arg.precision = 6;
+	print_float64(arg);
+	printf("\n%e\n", arg.value);
+	TEST_ASSERT_EQUAL_STRING("0", buffer);
+}
+
+TEST(dragon4_print_float64, 0_123456_scientific)
+{
+	arg.format = PRINT_FLOAT_FORMAT_SCIENTIFIC;
+	arg.value = 0.123456;
+	arg.precision = 6;
+	print_float64(arg);
+	printf("\n%e\n", arg.value);
+	TEST_ASSERT_EQUAL_STRING("0.123456", buffer);
+}
+
+TEST(dragon4_print_float64, 0_123453_precision4_scientific)
+{
+	arg.format = PRINT_FLOAT_FORMAT_SCIENTIFIC;
+	arg.value = 0.123453;
+	arg.precision = 4;
+	print_float64(arg);
+	printf("\n%.5e\n", arg.value);
+	TEST_ASSERT_EQUAL_STRING("0.12345", buffer);
+}
+
+TEST(dragon4_print_float64, 0_123456_precision4_scientific)
+{
+	arg.format = PRINT_FLOAT_FORMAT_SCIENTIFIC;
+	arg.value = 0.123456;
+	arg.precision = 4;
+	print_float64(arg);
+	printf("\n%.5e\n", arg.value);
+	TEST_ASSERT_EQUAL_STRING("0.12346", buffer);
+}

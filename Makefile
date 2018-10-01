@@ -47,6 +47,7 @@ SRCS :=					ft_printf.c					\
 						dragon4.c					\
 						float64_to_integer_conversion.c	\
 						format_positional.c			\
+						format_scientific.c			\
 						print_float64.c				\
 						print_inf_nan.c				\
 					
