@@ -1,7 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dragon4_format_scientific.c                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 21:10:23 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 21:10:25 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "dragon4.h"
 #include "utils.h"
 
-static t_dragon4_arg	form_dragon4_arg_lt_0(t_format_arg *arg, int32_t *print_exponent)
+static t_dragon4_arg	form_dragon4_arg
+(
+		t_format_arg *arg,
+		int32_t *print_exponent,
+		int precision
+)
 {
 	t_dragon4_arg	dragon4_arg;
 
@@ -9,33 +26,30 @@ static t_dragon4_arg	form_dragon4_arg_lt_0(t_format_arg *arg, int32_t *print_exp
 	dragon4_arg.exponent = arg->exponent;
 	dragon4_arg.mantissa_high_bit_idx = arg->mantissa_high_bit_idx;
 	dragon4_arg.has_unequal_margins = arg->has_unequal_margins;
-	dragon4_arg.cutoff_mode = CUTOFF_MODE_UNIQUE;
-	dragon4_arg.cutoff_number = 0;
 	dragon4_arg.out_buffer = arg->out_buffer;
 	dragon4_arg.buffer_size = arg->buffer_size;
 	dragon4_arg.out_exponent = print_exponent;
+	if (precision < 0)
+	{
+		dragon4_arg.cutoff_mode = CUTOFF_MODE_UNIQUE;
+		dragon4_arg.cutoff_number = 0;
+	}
+	else
+	{
+		dragon4_arg.cutoff_mode = CUTOFF_MODE_TOTAL_LENGTH;
+		dragon4_arg.cutoff_number = arg->precision + 1;
+	}
 	return (dragon4_arg);
 }
 
-static t_dragon4_arg	form_dragon4_arg_gte_0(t_format_arg *arg, int32_t *print_exponent)
+static void				insert_decimal_point
+(
+		t_format_arg *arg,
+		uint32_t *num_fraction_digits,
+		char **cur_out
+)
 {
-	t_dragon4_arg	dragon4_arg;
-
-	dragon4_arg.mantissa = arg->mantissa;
-	dragon4_arg.exponent = arg->exponent;
-	dragon4_arg.mantissa_high_bit_idx = arg->mantissa_high_bit_idx;
-	dragon4_arg.has_unequal_margins = arg->has_unequal_margins;
-	dragon4_arg.cutoff_mode = CUTOFF_MODE_TOTAL_LENGTH;
-	dragon4_arg.cutoff_number = arg->precision + 1;
-	dragon4_arg.out_buffer = arg->out_buffer;
-	dragon4_arg.buffer_size = arg->buffer_size;
-	dragon4_arg.out_exponent = print_exponent;
-	return (dragon4_arg);
-}
-
-static void	insert_decimal_point(t_format_arg *arg, uint32_t *num_fraction_digits, char **cur_out)
-{
-	uint32_t 	max_fraction_digits;
+	uint32_t	max_fraction_digits;
 
 	if (*num_fraction_digits > 0 && arg->buffer_size > 1)
 	{
@@ -49,7 +63,12 @@ static void	insert_decimal_point(t_format_arg *arg, uint32_t *num_fraction_digit
 	}
 }
 
-static void	add_trailing_zeroes(t_format_arg *arg, uint32_t num_fraction_digits, char **cur_out)
+static void				add_trailing_zeroes
+(
+		t_format_arg *arg,
+		uint32_t num_fraction_digits,
+		char **cur_out
+)
 {
 	uint32_t	num_zeroes;
 	char		*end;
@@ -74,7 +93,12 @@ static void	add_trailing_zeroes(t_format_arg *arg, uint32_t num_fraction_digits,
 	}
 }
 
-static void	add_exponent(t_format_arg *arg, int32_t print_exponent, char **cur_out)
+static void				add_exponent
+(
+		t_format_arg *arg,
+		int32_t print_exponent,
+		char **cur_out
+)
 {
 	char		exponent_buffer[5];
 	uint32_t	parts[3];
@@ -101,17 +125,15 @@ static void	add_exponent(t_format_arg *arg, int32_t print_exponent, char **cur_o
 	arg->buffer_size -= i;
 }
 
-uint32_t	format_scientific(t_format_arg arg)
+uint32_t				format_scientific(t_format_arg arg)
 {
 	int32_t			print_exponent;
 	uint32_t		num_print_digits;
 	uint32_t		num_fraction_digits;
 	char			*cur_out;
 
-	if (arg.precision < 0)
-		num_print_digits = dragon4(form_dragon4_arg_lt_0(&arg, &print_exponent));
-	else
-		num_print_digits = dragon4(form_dragon4_arg_gte_0(&arg, &print_exponent));
+	num_print_digits = dragon4(
+			form_dragon4_arg(&arg, &print_exponent, arg.precision));
 	cur_out = arg.out_buffer;
 	if (arg.buffer_size > 1)
 	{
