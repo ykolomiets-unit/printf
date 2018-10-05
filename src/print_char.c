@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_char.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 21:02:58 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 21:03:01 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "printf_core.h"
 #include "utils.h"
 
@@ -19,17 +31,6 @@ static int	print_buf(t_printf *options, char *buf, int len)
 	while (--len >= 0)
 		if ((print_res = options->putc(options, buf[len])))
 			return (print_res);
-	return (0);
-}
-
-static int	print_left_adjust(t_printf *options, t_fms *fms)
-{
-	int	print_res;
-
-	if (fms->left_adjust)
-		while (--fms->length >= 0)
-			if ((print_res = options->putc(options, ' ')))
-				return (print_res);
 	return (0);
 }
 

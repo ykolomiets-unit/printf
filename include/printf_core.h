@@ -14,6 +14,7 @@
 # define PRINTF_CORE_H
 
 # include <stdarg.h>
+# include <inttypes.h>
 
 # define BUF_SIZE 512
 # define INT_BUF_SIZE sizeof(intmax_t) * 8
@@ -82,100 +83,35 @@ typedef struct			s_int_options
 	char				sign_char;
 }						t_int_options;
 
-int						printf_core
-(
-						t_printf *options,
-						const char *fmt
-);
-
+int						printf_core(t_printf *options, const char *fmt);
 int						is_flag(char c);
-
-void					parse_flag
-(
-						const char **fmt,
-						t_fms *fms
-);
-
+void					parse_flag(const char **fmt, t_fms *fms);
 int						is_length_start(char c);
-
-void					parse_length
-(
-						const char **fmt,
-						t_fms *fms,
-						va_list *ap
-);
-
+void					parse_length(const char **fmt, t_fms *fms,
+										va_list *ap);
 int						is_precision_start(char c);
-
-void					parse_precision
-(
-						const char **fmt,
-						t_fms *fms,
-						va_list *ap
-);
-
+void					parse_precision(const char **fmt, t_fms *fms,
+										va_list *ap);
 int						is_length_modifier_start(char c);
-
-void					set_length_modifier
-(
-						t_fms *fms,
-						t_length_modifier modifier
-);
-
-void					parse_length_modifier
-(
-						const char **fmt,
-						t_fms *fms
-);
-
+void					set_length_modifier(t_fms *fms,
+											t_length_modifier modifier);
+void					parse_length_modifier(const char **fmt, t_fms *fms);
 int						is_specifier(char c);
-
-void					parse_specifier
-(
-						const char **fmt,
-						t_fms *fms
-);
-
-int						print_percent
-(
-						t_printf *options,
-						t_fms *fms
-);
-
-int						print_char
-(
-						t_printf *options,
-						t_fms *fms
-);
-
-int						print_integer
-(
-						t_printf *options,
-						t_fms *fms
-);
-
-int						print_float
-(
-						t_printf *options,
-						t_fms *fms
-);
-
-int						print_string
-(
-						t_printf *options,
-						t_fms *fms
-);
-
-int						print_pointer
-(
-						t_printf *options,
-						t_fms *fms
-);
-
-int						print_none_specifier
-(
-						t_printf *options,
-						t_fms *fms
-);
+void					parse_specifier(const char **fmt, t_fms *fms);
+int						print_percent(t_printf *options, t_fms *fms);
+int						print_char(t_printf *options, t_fms *fms);
+int						uintmax_to_buf(uintmax_t u, int base,
+							int capitals, char **buf);
+char 					*get_prefix_for_int(uintmax_t u, t_fms *fms,
+							int base, int capitals);
+int						print_num(uintmax_t u, t_printf *options,
+									t_fms *fms, t_int_options *int_opt);
+int						print_integer(t_printf *options, t_fms *fms);
+int						print_float(t_printf *options, t_fms *fms);
+int						insert_point(t_fms *fms, char *buf);
+int						print_string(t_printf *options, t_fms *fms);
+int						print_pointer(t_printf *options, t_fms *fms);
+int						print_none_specifier(t_printf *options, t_fms *fms);
+int						print_left_adjust(t_printf *options, t_fms *fms);
 
 #endif

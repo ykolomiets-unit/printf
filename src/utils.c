@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 19:40:44 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 19:40:46 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "utils.h"
 
 void		ft_bzero(void *p, int size)
@@ -13,7 +25,7 @@ int			ft_strlen(char *s)
 {
 	int	len;
 
-	len	= 0;
+	len = 0;
 	while (*s++)
 		len++;
 	return (len);
@@ -49,7 +61,6 @@ void		*ft_memset(void *s, int c, size_t n)
 		temp[n] = (char)c;
 	return (s);
 }
-
 
 void		*ft_memcpy(void *dest, const void *src, size_t n)
 {

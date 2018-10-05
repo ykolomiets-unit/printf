@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_float.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 20:42:58 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 20:43:00 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "printf_core.h"
 #include "utils.h"
 #include "dragon4.h"
@@ -24,18 +36,13 @@ static int	print_pad_and_sign(t_printf *options, t_fms *fms, char sign_char)
 	return (0);
 }
 
-static int	print_left_adjust(t_printf *options, t_fms *fms)
-{
-	int	print_res;
-
-	if (fms->left_adjust)
-		while (--fms->length >= 0)
-			if ((print_res = options->putc(options, ' ')))
-				return (print_res);
-	return (0);
-}
-
-static void	apply_dragon4(t_printf *options, t_fms *fms, char *buf, int *is_negative)
+static void	apply_dragon4
+(
+		t_printf *options,
+		t_fms *fms,
+		char *buf,
+		int *is_negative
+)
 {
 	t_print_float64_arg	arg;
 
@@ -54,55 +61,9 @@ static void	apply_dragon4(t_printf *options, t_fms *fms, char *buf, int *is_nega
 		arg.is_upper_case = 1;
 	else
 		arg.is_upper_case = 0;
-	print_float64(arg);	
+	print_float64(arg);
 }
 
-static int	add_point_in_positional(char *buf)
-{
-	int	i;
-
-	int len;
-
-	len = ft_strlen(buf);
-	i = -1;
-	while (++i < len)
-		if (buf[i] == '.')
-			return (0);
-	buf[len] = '.';
-	buf[len + 1] = '\0';
-	return (1);
-}
-
-static int add_point_in_scientific(char *buf)
-{
-	int	i;
-	int len;
-
-	len = ft_strlen(buf);
-	i = -1;
-	while (++i < len)
-	{
-		if (buf[i] == '.')
-			return (0);
-		if (buf[i] == 'e' || buf[i] == 'E')
-			break;
-	}
-	ft_memmove(buf + i + 1, buf + i, len - i + 1);
-	buf[i] = '.';
-	return (1);
-}
-
-static int	insert_point(t_fms *fms, char *buf)
-{
-	if (fms->altfmt)
-	{
-		if (fms->specifier == 'f' || fms->specifier == 'F')
-			return (add_point_in_positional(buf));
-		else
-			return (add_point_in_scientific(buf));
-	}
-	return (0);
-}
 static int	output_buf(t_printf *options, int precision, char *buf)
 {
 	int	print_res;
@@ -132,7 +93,7 @@ static int	output_buf(t_printf *options, int precision, char *buf)
 	return (0);
 }
 
-static int 	get_length_with_precision(char *buf, int precision)
+static int	get_length_with_precision(char *buf, int precision)
 {
 	int	len;
 	int real_precision;
@@ -158,11 +119,11 @@ static int 	get_length_with_precision(char *buf, int precision)
 
 int			print_float(t_printf *options, t_fms *fms)
 {
-	int					print_res;
-	int					length_with_precision;
-	char				buf[1024];
-	char 				sign_char;
-	int 				is_negative;
+	int		print_res;
+	int		length_with_precision;
+	char	buf[1024];
+	char	sign_char;
+	int		is_negative;
 
 	apply_dragon4(options, fms, buf, &is_negative);
 	sign_char = is_negative ? '-' : fms->plus_sign;

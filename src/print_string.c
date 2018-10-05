@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_string.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 19:50:14 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 19:50:15 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "printf_core.h"
 #include "utils.h"
 #include <limits.h>
@@ -28,7 +40,7 @@ static int	print_wchar_string_core(t_printf *options, t_fms *fms, wchar_t *str)
 	{
 		len = wchartobuf(*str++, buf);
 		if (len > fms->precision)
-			break;
+			break ;
 		fms->precision -= len;
 		while (--len >= 0)
 			if ((print_res = options->putc(options, buf[len])))
@@ -51,10 +63,7 @@ static int	print_wchar_string(t_printf *options, t_fms *fms)
 				return (print_res);
 	if ((print_res = print_wchar_string_core(options, fms, str)))
 		return (print_res);
-	if (fms->left_adjust)
-		while (--fms->length >= 0)
-			if ((print_res = options->putc(options, ' ')))
-				return (print_res);
+	print_left_adjust(options, fms);
 	return (0);
 }
 
@@ -77,20 +86,16 @@ static int	print_char_string(t_printf *options, t_fms *fms)
 	while (*p != '\0' && --fms->precision >= 0)
 		if ((print_res = options->putc(options, *p++)))
 			return (print_res);
-	if (fms->left_adjust)
-		while (--fms->length >= 0)
-			if ((print_res = options->putc(options, ' ')))
-				return (print_res);
+	print_left_adjust(options, fms);
 	return (0);
 }
 
-int		print_string(t_printf* options, t_fms *fms)
+int			print_string(t_printf *options, t_fms *fms)
 {
-
 	if (fms->precision == -1)
 		fms->precision = INT_MAX;
 	if (fms->length_modifier == LM_LONG)
 		return (print_wchar_string(options, fms));
 	else
-		return(print_char_string(options, fms));
+		return (print_char_string(options, fms));
 }

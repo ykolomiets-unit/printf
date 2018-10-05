@@ -31,13 +31,17 @@ SRCS :=					ft_printf.c						\
 						precision.c						\
 						length_modifier.c				\
 						specifier.c						\
-						print_integer.c					\
-						print_float.c					\
+						print_integer_part1.c			\
+						print_integer_part2.c			\
+						print_integer_part3.c			\
+						print_float_part1.c	    		\
+						print_float_part2.c	    		\
 						print_percent.c					\
 						print_char.c					\
 						print_string.c					\
 						print_pointer.c					\
 						print_none_specifier.c			\
+						print_left_adjust.c             \
 						log_base_2.c					\
 						big_int.c						\
 						big_int_power_of_10.c			\

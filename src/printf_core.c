@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   printf_core.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 19:42:58 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 19:42:59 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "printf_core.h"
 
 static void	set_default_fms(t_fms *fms)
@@ -17,7 +29,10 @@ static int	parse_fms(const char **fmt, t_fms *fms, va_list *ap)
 {
 	char	c;
 
-	do
+	c = **fmt;
+	if (c == '\0')
+		fms->specifier_type = ST_NULL_TERNINATOR;
+	while (c)
 	{
 		c = **fmt;
 		if (is_flag(c))
@@ -31,9 +46,9 @@ static int	parse_fms(const char **fmt, t_fms *fms, va_list *ap)
 		else
 		{
 			parse_specifier(fmt, fms);
-			break;
+			break ;
 		}
-	} while(c);
+	}
 	return (0);
 }
 
@@ -41,21 +56,21 @@ static int	print_specifier(t_printf *options, t_fms *fms)
 {
 	t_specifier_type	spec;
 
-	spec =	fms->specifier_type;
+	spec = fms->specifier_type;
 	if (spec == ST_PERCENT)
-		return print_percent(options, fms);
+		return (print_percent(options, fms));
 	else if (spec == ST_INTEGER)
-		return print_integer(options, fms);
+		return (print_integer(options, fms));
 	else if (spec == ST_FLOAT)
-		return print_float(options, fms);
+		return (print_float(options, fms));
 	else if (spec == ST_CHARACTER)
-		return print_char(options, fms);
+		return (print_char(options, fms));
 	else if (spec == ST_STRING)
-		return print_string(options, fms);
+		return (print_string(options, fms));
 	else if (spec == ST_POINTER)
-		return print_pointer(options, fms);
+		return (print_pointer(options, fms));
 	else if (spec == ST_NONE)
-		return print_none_specifier(options, fms);
+		return (print_none_specifier(options, fms));
 	return (0);
 }
 
