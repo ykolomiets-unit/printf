@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dragon4.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 17:38:12 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 17:40:31 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef DRAGON4_H
 # define DRAGON4_H
 
@@ -26,18 +38,18 @@ typedef struct		s_dragon4_arg
 	int32_t			*out_exponent;
 }					t_dragon4_arg;
 
-typedef enum		e_print_float_format
+typedef enum		e_float_format
 {
 	PRINT_FLOAT_FORMAT_POSITIONAL,
 	PRINT_FLOAT_FORMAT_SCIENTIFIC
-}					t_print_float_format;
+}					t_float_format;
 
 typedef struct		s_print_float64_arg
 {
 	char			*out_buffer;
 	uint32_t		buffer_size;
 	double			value;
-	t_print_float_format format;
+	t_float_format	format;
 	t_boolean		is_upper_case;
 	int32_t			precision;
 }					t_print_float64_arg;
@@ -60,7 +72,14 @@ uint32_t			log_base_2_uint64(uint64_t val);
 
 uint32_t			format_positional(t_format_arg arg);
 uint32_t			format_scientific(t_format_arg arg);
-uint32_t 			print_inf_nan(char *buffer, uint32_t buffer_size, uint64_t mantissa, t_boolean is_upper_case);
+
+uint32_t			print_inf_nan
+(
+					char *buffer,
+					uint32_t buffer_size,
+					uint64_t mantissa,
+					t_boolean is_upper_case
+);
 
 uint32_t			print_float64(t_print_float64_arg arg);
 

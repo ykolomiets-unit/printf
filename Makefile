@@ -8,7 +8,7 @@ OBJ_DIR :=				./obj
 INC_DIR :=				./include
 
 HEADERS :=				ft_printf.h						\
-						_printf.h						\
+						printf_core.h					\
 						utils.h							\
 						dragon4.h						\
 						big_int.h						\
@@ -25,7 +25,7 @@ SRCS :=					ft_printf.c						\
 						ft_vsnprintf.c					\
 						utils.c							\
 						wchartobuf.c					\
-						_printf.c						\
+						printf_core.c					\
 						flags.c							\
 						length.c						\
 						precision.c						\

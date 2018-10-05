@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 17:37:13 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 17:37:52 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef UTILS_H
 # define UTILS_H
 
-#include <wchar.h>
+# include <wchar.h>
 
 # define IS_DIGIT(x) ((x) >= '0' && (x) <= '9')
 # define BITS_IN_WCHAR ((int)sizeof(wchar_t) * 8)
@@ -21,4 +33,5 @@ int		wchar_length_in_bytes(wchar_t ch);
 void	*ft_memmove(void *dest, const void *src, size_t n);
 void	*ft_memset(void *s, int c, size_t n);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
+
 #endif

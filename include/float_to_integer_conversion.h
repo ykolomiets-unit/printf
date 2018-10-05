@@ -1,9 +1,21 @@
-#ifndef FLOAT_TO_INTEGER_CONVERTION_H
-# define FLOAT_TO_INTEGER_CONVERTION_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   float_to_integer_conversion.h                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 17:35:27 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 17:36:51 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef FLOAT_TO_INTEGER_CONVERSION_H
+# define FLOAT_TO_INTEGER_CONVERSION_H
 
 # include "inttypes.h"
 
-typedef union	s_float_union64
+typedef union	u_float_union64
 {
 	double		floating_point;
 	uint64_t	integer;

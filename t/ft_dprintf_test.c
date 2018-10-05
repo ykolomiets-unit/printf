@@ -20,6 +20,7 @@ TEST_SETUP(ft_dprintf)
 TEST_TEAR_DOWN(ft_dprintf)
 {
 	close(fd);
+	remove("test_file");
 }
 
 void	read_file(void)

@@ -1,5 +1,4 @@
-#include "_printf.h"
-#include <stdio.h>
+#include "printf_core.h"
 
 # define POINTER_BUF_SIZE (sizeof(void *) * 2)
 
