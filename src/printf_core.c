@@ -59,7 +59,7 @@ static int	print_specifier(t_printf *options, t_fms *fms)
 	return (0);
 }
 
-int			_printf(t_printf *options, const char *fmt)
+int			printf_core(t_printf *options, const char *fmt)
 {
 	int		res;
 	char	c;

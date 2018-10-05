@@ -1,16 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   big_int_addition.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 17:54:42 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 17:54:43 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "big_int.h"
 
-typedef	struct	s_bi_add
-{
-	t_big_int	*large;
-	t_big_int	*small;
-	uint32_t	*large_cur;
-	uint32_t	*large_end;
-	uint32_t	*small_cur;
-	uint32_t	*small_end;
-}				t_bi_add;
-
-static void	pickup_large_and_small(t_bi_add *bi_add, t_big_int *left, t_big_int *right)
+static void	pickup_large_and_small
+(
+		t_bi_add_support *bi_add,
+		t_big_int *left,
+		t_big_int *right
+)
 {
 	if (left->length > right->length)
 	{
@@ -23,12 +30,17 @@ static void	pickup_large_and_small(t_bi_add *bi_add, t_big_int *left, t_big_int 
 		bi_add->large = right;
 	}
 	bi_add->large_cur = bi_add->large->blocks;
-	bi_add->large_end =	bi_add->large_cur + bi_add->large->length;
+	bi_add->large_end = bi_add->large_cur + bi_add->large->length;
 	bi_add->small_cur = bi_add->small->blocks;
-	bi_add->small_end =	bi_add->small_cur + bi_add->small->length;
+	bi_add->small_end = bi_add->small_cur + bi_add->small->length;
 }
 
-static void	sum_while_small(t_bi_add *params, uint64_t *out_carry, uint32_t **result)	
+static void	sum_while_small
+(
+		t_bi_add_support *params,
+		uint64_t *out_carry,
+		uint32_t **result
+)
 {
 	uint64_t	sum;
 	uint64_t	carry;
@@ -36,7 +48,8 @@ static void	sum_while_small(t_bi_add *params, uint64_t *out_carry, uint32_t **re
 	carry = 0;
 	while (params->small_cur != params->small_end)
 	{
-		sum = (uint64_t)*params->small_cur + (uint64_t)*params->large_cur + carry;
+		sum = (uint64_t)*params->small_cur + (uint64_t)*params->large_cur
+				+ carry;
 		carry = sum >> 32;
 		**result = sum & 0xffffffff;
 		++params->small_cur;
@@ -46,12 +59,17 @@ static void	sum_while_small(t_bi_add *params, uint64_t *out_carry, uint32_t **re
 	*out_carry = carry;
 }
 
-void	bi_add(t_big_int *result, t_big_int *left, t_big_int *right)
+void		bi_add
+(
+		t_big_int *result,
+		t_big_int *left,
+		t_big_int *right
+)
 {
-	t_bi_add	params;
-	uint64_t	sum;
-	uint64_t	carry;
-	uint32_t	*result_cur;
+	t_bi_add_support	params;
+	uint64_t			sum;
+	uint64_t			carry;
+	uint32_t			*result_cur;
 
 	pickup_large_and_small(&params, left, right);
 	result_cur = result->blocks;

@@ -6,7 +6,7 @@
 /*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/05 17:28:28 by ykolomie          #+#    #+#             */
-/*   Updated: 2018/10/05 17:35:19 by ykolomie         ###   ########.fr       */
+/*   Updated: 2018/10/05 17:50:26 by ykolomie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,34 @@ typedef	struct	s_big_int
 	uint32_t	blocks[BIG_INT_MAX_BLOCK];
 }				t_big_int;
 
-void			bi_set_zero(t_big_int *big_int);
+typedef	struct	s_bi_add_support
+{
+	t_big_int	*large;
+	t_big_int	*small;
+	uint32_t	*large_cur;
+	uint32_t	*large_end;
+	uint32_t	*small_cur;
+	uint32_t	*small_end;
+}				t_bi_add_support;
+
+typedef	struct	s_bi_div_support
+{
+	uint64_t	borrow;
+	uint64_t	carry;
+	uint64_t	product;
+	uint64_t	difference;
+}				t_bi_div_support;
+
+typedef struct	s_bi_mult_support
+{
+	t_big_int	*large;
+	t_big_int	*small;
+	uint32_t	*large_beg;
+	uint32_t	*large_end;
+	uint32_t	*small_beg;
+	uint32_t	*small_end;
+}				t_bi_mult_support;
+
 t_boolean		bi_is_zero(t_big_int *big_int);
 
 void			bi_set_u32
@@ -104,5 +131,8 @@ void			bi_shift_left
 				t_big_int *result,
 				uint32_t shift
 );
+
+uint32_t		get_pow10_uint32(uint32_t pow);
+t_big_int		*get_pow10_big_int(uint32_t pow);
 
 #endif

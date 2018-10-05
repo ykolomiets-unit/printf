@@ -40,8 +40,10 @@ SRCS :=					ft_printf.c						\
 						print_none_specifier.c			\
 						log_base_2.c					\
 						big_int.c						\
+						big_int_power_of_10.c			\
 						big_int_addition.c				\
 						big_int_multiplication.c		\
+						big_int_multiplication_by_int.c	\
 						big_int_exponentiation.c		\
 						big_int_division.c				\
 						big_int_shift_left.c			\

@@ -25,4 +25,8 @@ TEST_GROUP_RUNNER(print_float)
 	RUN_TEST_CASE(print_float, e_alternative_form);
 	RUN_TEST_CASE(print_float, f_too_large_precision_for_dragon4);
 	RUN_TEST_CASE(print_float, e_too_large_precision_for_dragon4);
+	RUN_TEST_CASE(print_float, f_interesting_value1);
+	RUN_TEST_CASE(print_float, e_interesting_value1);
+	RUN_TEST_CASE(print_float, f_interesting_value2);
+	RUN_TEST_CASE(print_float, e_interesting_value2);
 }

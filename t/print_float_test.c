@@ -145,3 +145,27 @@ TEST(print_float, e_too_large_precision_for_dragon4)
 	ft_snprintf(buffer, BUF_SIZE, "%.20e", 100.0);
 	TEST_ASSERT_EQUAL_STRING("1.00000000000000000000e+02", buffer);
 }
+
+TEST(print_float, f_interesting_value1)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%.20f", 1.12941249812749812471);
+	TEST_ASSERT_EQUAL_STRING("1.12941249812749822112", buffer);
+}
+
+TEST(print_float, e_interesting_value1)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%.20e", 100.12941249812749812471);
+	TEST_ASSERT_EQUAL_STRING("1.00129412498127493336e+02", buffer);
+}
+
+TEST(print_float, f_interesting_value2)
+{
+ft_snprintf(buffer, BUF_SIZE, "%.20f", 9823742742.1231231231);
+TEST_ASSERT_EQUAL_STRING("9823742742.12312316894531250000", buffer);
+}
+
+TEST(print_float, e_interesting_value2)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%.20e", 9823742742.1231231231);
+	TEST_ASSERT_EQUAL_STRING("9.82374274212312316895e+09", buffer);
+}

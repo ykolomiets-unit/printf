@@ -1,13 +1,20 @@
-#include "big_int.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   big_int.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 17:48:42 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 17:54:11 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void		bi_set_zero(t_big_int *big_int)
-{
-	big_int->length = 0;
-}
+#include "big_int.h"
 
 t_boolean	bi_is_zero(t_big_int *big_int)
 {
-	return	big_int->length == 0;
+	return (big_int->length == 0);
 }
 
 void		bi_set_u32(t_big_int *big_int, uint32_t val)
@@ -33,7 +40,7 @@ void		bi_set_u64(t_big_int *big_int, uint64_t val)
 	if (val > 0xFFFFFFFF)
 	{
 		big_int->blocks[0] = val & 0xFFFFFFFF;
-		val	>>= 32;
+		val >>= 32;
 		big_int->blocks[1] = val & 0xFFFFFFFF;
 		big_int->length = 2;
 	}

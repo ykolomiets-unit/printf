@@ -1,48 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   big_int_exponentiation.c                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 19:20:20 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 19:20:22 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "big_int.h"
 
-static uint32_t	get_pow10_uint32(uint32_t pow)
-{
-	static uint32_t power_of_10[] =
-	{
-		1,
-		10,
-		100,
-		1000,
-		10000,
-		100000,
-		1000000,
-		10000000,
-	};
-
-	return (power_of_10[pow]);
-}
-
-static t_big_int	*get_pow10_big_int(uint32_t pow)
-{
-	static t_big_int power_of_10[] =
-	{
-		{ 1, { 100000000 } },
-		{ 2, { 0x6fc10000, 0x002386f2 } },
-		{ 4, { 0x00000000, 0x85acef81, 0x2d6d415b, 0x000004ee, } },
-		{ 7, { 0x00000000, 0x00000000, 0xbf6a1f01, 0x6e38ed64,
-				0xdaa797ed, 0xe93ff9f4, 0x00184f03, } },
-		{ 14, { 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-				0x2e953e01, 0x03df9909, 0x0f1538fd, 0x2374e42f,
-				0xd3cff5ec, 0xc404dc08, 0xbccdb0da, 0xa6337f19,
-				0xe91f2603, 0x0000024e, } },
-		{ 27, { 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-				0x00000000, 0x00000000, 0x00000000,	0x00000000,
-				0x982e7c01, 0xbed3875b, 0xd8d99f72, 0x12152f87,
-				0x6bde50c6, 0xcf4a6e70,	0xd595d80f, 0x26b2716e,
-				0xadc666b0, 0x1d153624, 0x3c42d35a, 0x63ff540e,
-				0xcc5573c0, 0x65f9ef17, 0x55bc28f2, 0x80dcc7f7,
-				0xf46eeddc, 0x5fdcefce, 0x000553f7, } }
-	};
-
-	return (&power_of_10[pow]);
-}
-
-static void			swap_bi_pointers(t_big_int **a, t_big_int **b)
+static void	swap_bi_pointers(t_big_int **a, t_big_int **b)
 {
 	t_big_int	*temp;
 
@@ -51,7 +21,7 @@ static void			swap_bi_pointers(t_big_int **a, t_big_int **b)
 	*b = temp;
 }
 
-void				bi_pow10(t_big_int *result, uint32_t exp)
+void		bi_pow10(t_big_int *result, uint32_t exp)
 {
 	t_big_int	temp1;
 	t_big_int	temp2;
@@ -76,8 +46,8 @@ void				bi_pow10(t_big_int *result, uint32_t exp)
 	}
 	*result = *cur_temp;
 }
- 
-void				bi_mult_by_pow10(t_big_int *result, t_big_int *in, uint32_t exp)
+
+void		bi_mult_by_pow10(t_big_int *result, t_big_int *in, uint32_t exp)
 {
 	t_big_int	temp1;
 	t_big_int	temp2;
@@ -106,7 +76,7 @@ void				bi_mult_by_pow10(t_big_int *result, t_big_int *in, uint32_t exp)
 	*result = *cur_temp;
 }
 
-void				bi_pow2(t_big_int *result, uint32_t exp)
+void		bi_pow2(t_big_int *result, uint32_t exp)
 {
 	uint32_t	block_idx;
 	uint32_t	bit_idx;

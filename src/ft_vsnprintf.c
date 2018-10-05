@@ -28,6 +28,6 @@ int			ft_vsnprintf(char *buf, const int size, const char *fmt, va_list *ap)
 	options.putc = print_to_buf;
 	options.flush = flush_to_buf;
 	options.printed = 0;
-	_printf(&options, fmt);
+	printf_core(&options, fmt);
 	return (options.printed);
 }

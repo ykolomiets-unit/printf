@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   big_int_shift_left.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 19:36:17 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 19:36:19 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "big_int.h"
 
 static void	shift_aligned(t_big_int *result, uint32_t shift_blocks)
@@ -29,14 +41,19 @@ static void	zero_low_blocks(t_big_int *result, uint32_t blocks)
 		result->blocks[i++] = 0;
 }
 
-static void	shift_not_aligned(t_big_int *result, uint32_t shift_blocks, uint32_t shift_bits)
+static void	shift_not_aligned
+(
+		t_big_int *result,
+		uint32_t shift_blocks,
+		uint32_t shift_bits
+)
 {
 	int32_t		in_block_idx;
 	uint32_t	out_block_idx;
 	uint32_t	high_bits;
 	uint32_t	block;
 	uint32_t	low_bits;
-	
+
 	in_block_idx = result->length - 1;
 	out_block_idx = result->length + shift_blocks;
 	result->length = out_block_idx + 1;

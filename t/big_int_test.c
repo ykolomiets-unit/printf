@@ -28,14 +28,6 @@ static void print_big_int(t_big_int *val)
 	}
 }
 
-TEST(big_int, set_zero)
-{
-	t_big_int	bi;
-
-	bi_set_zero(&bi);
-	TEST_ASSERT_EQUAL_UINT32(0, bi.length);
-}
-
 TEST(big_int, set_u32_zero)
 {
 	t_big_int	bi;
@@ -85,8 +77,8 @@ TEST(big_int, compare_zero_with_zero)
 	t_big_int	bi1;
 	t_big_int	bi2;
 
-	bi_set_zero(&bi1);
-	bi_set_zero(&bi2);
+	bi_set_u32(&bi1, 0);
+	bi_set_u32(&bi2, 0);
 	TEST_ASSERT_EQUAL_INT(0, bi_compare(&bi1, &bi2));
 }
 
@@ -128,8 +120,8 @@ TEST(big_int, add_zeroes)
 	t_big_int	bi2;
 	t_big_int	result;
 
-	bi_set_zero(&bi1);
-	bi_set_zero(&bi2);
+	bi_set_u32(&bi1, 0);
+	bi_set_u32(&bi2, 0);
 	bi_add(&result, &bi1, &bi2);
 	TEST_ASSERT_EQUAL_UINT32(0, result.length);
 }
