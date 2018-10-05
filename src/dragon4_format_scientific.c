@@ -77,32 +77,28 @@ static void	add_trailing_zeroes(t_format_arg *arg, uint32_t num_fraction_digits,
 static void	add_exponent(t_format_arg *arg, int32_t print_exponent, char **cur_out)
 {
 	char		exponent_buffer[5];
-	uint32_t	hundreds;
-	uint32_t 	tens;
-	uint32_t 	ones;
-	uint32_t	exponent_size;
+	uint32_t	parts[3];
+	uint32_t	i;
 
-	if (arg->buffer_size > 1)
+	exponent_buffer[0] = arg->is_upper_case ? 'E' : 'e';
+	if (print_exponent >= 0)
+		exponent_buffer[1] = '+';
+	else
 	{
-		exponent_buffer[0] = 'e';
-		if (print_exponent >= 0)
-			exponent_buffer[1] = '+';
-		else
-		{
-			exponent_buffer[1] = '-';
-			print_exponent = -print_exponent;
-		}
-		hundreds = (uint32_t)(print_exponent / 100);
-		tens = (print_exponent - hundreds * 100) / 10;
-		ones = (print_exponent - hundreds * 100 - tens * 10);
-		exponent_buffer[2] = (char)('0' + hundreds);
-		exponent_buffer[3] = (char)('0' + tens);
-		exponent_buffer[4] = (char)('0' + ones);
-		exponent_size = (5 < (arg->buffer_size - 1)) ? 5 : (arg->buffer_size - 1);
-		ft_memcpy(*cur_out, exponent_buffer, exponent_size);
-		*cur_out += exponent_size;
-		arg->buffer_size -= exponent_size;
+		exponent_buffer[1] = '-';
+		print_exponent = -print_exponent;
 	}
+	parts[0] = (uint32_t)(print_exponent / 100);
+	parts[1] = (print_exponent - parts[0] * 100) / 10;
+	parts[2] = (print_exponent - parts[0] * 100 - parts[1] * 10);
+	i = 2;
+	if (parts[0])
+		exponent_buffer[i++] = (char)('0' + parts[0]);
+	exponent_buffer[i++] = (char)('0' + parts[1]);
+	exponent_buffer[i++] = (char)('0' + parts[2]);
+	ft_memcpy(*cur_out, exponent_buffer, i);
+	*cur_out += i;
+	arg->buffer_size -= i;
 }
 
 uint32_t	format_scientific(t_format_arg arg)

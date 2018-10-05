@@ -1,33 +1,14 @@
 #include "utils.h"
 
-static int get_active_bits_count(wchar_t ch)
-{
-	int count;
-	int i;
-
-	count = 0;
-	i = 0;
-	while (i++ <= BITS_IN_WCHAR)
-	{
-		if (ch & 0x1)
-			count = i;
-		ch >>= 1;
-	}
-	return (count);
-}
-
 int			wchar_length_in_bytes(wchar_t ch)
 {
-	int	active_bits;
-
-	active_bits = get_active_bits_count(ch);
-	if (active_bits <= 7)
+	if (ch < 0x80)
 		return (1);
-	else if (active_bits <= 11)
+	if (ch < 0x800)
 		return (2);
-	else if (active_bits <= 16)
+	if (ch < 0x10000)
 		return (3);
-	else if (active_bits <= 21)
+	if (ch < 0x200000)
 		return (4);
 	return (0);
 }

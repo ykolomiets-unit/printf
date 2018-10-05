@@ -38,6 +38,7 @@ typedef struct		s_print_float64_arg
 	uint32_t		buffer_size;
 	double			value;
 	t_print_float_format format;
+	t_boolean		is_upper_case;
 	int32_t			precision;
 }					t_print_float64_arg;
 
@@ -49,6 +50,7 @@ typedef struct		s_format_arg
 	int32_t			exponent;
 	uint32_t		mantissa_high_bit_idx;
 	t_boolean		has_unequal_margins;
+	t_boolean		is_upper_case;
 	int32_t			precision;
 }					t_format_arg;
 
@@ -58,7 +60,7 @@ uint32_t			log_base_2_uint64(uint64_t val);
 
 uint32_t			format_positional(t_format_arg arg);
 uint32_t			format_scientific(t_format_arg arg);
-uint32_t 			print_inf_nan(char *buffer, uint32_t buffer_size, uint64_t mantissa);
+uint32_t 			print_inf_nan(char *buffer, uint32_t buffer_size, uint64_t mantissa, t_boolean is_upper_case);
 
 uint32_t			print_float64(t_print_float64_arg arg);
 

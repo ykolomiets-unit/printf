@@ -6,6 +6,8 @@
 #include "ft_printf.h"
 #include <unistd.h>
 #include <string.h>
+#include <stdint.h>
+#include <math.h>
 
 #define BITS_IN_ULONG ((int)sizeof(unsigned long) * 8)
 #define UTF8_2_BYTES_MASK 0xC0
@@ -19,8 +21,6 @@
 
 int	main(void)
 {
-	setlocale(LC_ALL, "en_US.UTF-8");
-	printf("{%05p}", 0);
-	ft_printf("{%05p}", 0);
+	printf("%010.1e\n", 100.0);
 	return (0);
 }

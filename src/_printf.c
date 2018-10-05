@@ -46,6 +46,8 @@ static int	print_specifier(t_printf *options, t_fms *fms)
 		return print_percent(options, fms);
 	else if (spec == ST_INTEGER)
 		return print_integer(options, fms);
+	else if (spec == ST_FLOAT)
+		return print_float(options, fms);
 	else if (spec == ST_CHARACTER)
 		return print_char(options, fms);
 	else if (spec == ST_STRING)
