@@ -4,7 +4,7 @@
 # include <stdint.h>
 # include <stddef.h>
 
-typedef	int		t_boolean;
+typedef	int			t_boolean;
 
 typedef enum		e_cutoff_mode
 {

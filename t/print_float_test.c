@@ -127,3 +127,21 @@ TEST(print_float, f_alternative_form)
 	ft_snprintf(buffer, BUF_SIZE, "%#.0f", 100.0);
 	TEST_ASSERT_EQUAL_STRING("100.", buffer);
 }
+
+TEST(print_float, e_alternative_form)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%#.0e", 100.0);
+	TEST_ASSERT_EQUAL_STRING("1.e+02", buffer);
+}
+
+TEST(print_float, f_too_large_precision_for_dragon4)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%.20f", 100.0);
+	TEST_ASSERT_EQUAL_STRING("100.00000000000000000000", buffer);
+}
+
+TEST(print_float, e_too_large_precision_for_dragon4)
+{
+	ft_snprintf(buffer, BUF_SIZE, "%.20e", 100.0);
+	TEST_ASSERT_EQUAL_STRING("1.00000000000000000000e+02", buffer);
+}
