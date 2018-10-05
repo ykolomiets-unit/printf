@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_vdprintf.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 21:07:54 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 21:07:55 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_printf.h"
 #include "printf_core.h"
 #include "utils.h"
@@ -23,7 +35,8 @@ static int	flush_to_stream(t_printf *options)
 {
 	int	wrote;
 
-	if ((wrote = write(options->fd, options->buffer, options->pos_in_buffer)) == -1)
+	if ((wrote = write(options->fd, options->buffer,
+			options->pos_in_buffer)) == -1)
 		return (-1);
 	options->printed += wrote;
 	return (0);
