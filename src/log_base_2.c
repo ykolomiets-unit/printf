@@ -1,15 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   log_base_2.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 21:04:40 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 21:04:41 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "dragon4.h"
 
-# define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
+#define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
 
 uint32_t	log_base_2_uint32(uint32_t val)
 {
-	static const uint8_t	log_table[256] = 
-	{
+	static const uint8_t	log_table[256] = {
 		0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
 		LT(4),
 		LT(5), LT(5),
-		LT(6), LT(6), LT(6), LT(6), 
+		LT(6), LT(6), LT(6), LT(6),
 		LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7),
 	};
 	uint32_t				temp;

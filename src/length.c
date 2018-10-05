@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   length.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykolomie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/10/05 21:05:43 by ykolomie          #+#    #+#             */
+/*   Updated: 2018/10/05 21:05:47 by ykolomie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "printf_core.h"
 #include "utils.h"
 
@@ -26,7 +38,7 @@ void	parse_length(const char **fmt, t_fms *fms, va_list *ap)
 	else if (c == '*')
 	{
 		fms->length = va_arg(*ap, int);
-		if (fms->length < 0) 
+		if (fms->length < 0)
 		{
 			fms->left_adjust = TRUE;
 			fms->length = -fms->length;
