@@ -18,3 +18,42 @@ int			ft_strlen(char *s)
 		len++;
 	return (len);
 }
+
+void		*ft_memmove(void *dest, const void *src, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	if (dest > src)
+	{
+		dest += n;
+		src += n;
+		while (n--)
+			*((char*)--dest) = *((char*)--src);
+		return (dest);
+	}
+	while (i < n)
+	{
+		((char*)dest)[i] = ((char*)src)[i];
+		i++;
+	}
+	return (dest);
+}
+
+void		*ft_memset(void *s, int c, size_t n)
+{
+	char	*temp;
+
+	temp = (char*)s;
+	while (n-- > 0)
+		temp[n] = (char)c;
+	return (s);
+}
+
+
+void		*ft_memcpy(void *dest, const void *src, size_t n)
+{
+	while (n--)
+		((char*)dest)[n] = ((char*)src)[n];
+	return (dest);
+}

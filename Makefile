@@ -7,32 +7,51 @@ OBJ_DIR :=				./obj
 
 INC_DIR :=				./include
 
-HEADERS :=				ft_printf.h					\
-						_printf.h					\
-						utils.h						
+HEADERS :=				ft_printf.h						\
+						_printf.h						\
+						utils.h							\
+						dragon4.h						\
+						big_int.h						\
+						big_int.h						\
+						float_to_integer_conversion.h	\
 
 HEADERS_DEP :=			$(addprefix $(INC_DIR)/, $(HEADERS))
 
 
-SRCS :=					ft_printf.c					\
-						ft_dprintf.c				\
-						ft_snprintf.c				\
-						ft_vdprintf.c				\
-						ft_vsnprintf.c				\
-						utils.c						\
-						wchartobuf.c				\
-						_printf.c					\
-						flags.c						\
-						length.c					\
-						precision.c					\
-						length_modifier.c			\
-						specifier.c					\
-						print_integer.c				\
-						print_percent.c				\
-						print_char.c				\
-						print_string.c				\
-						print_pointer.c				\
-						print_none_specifier.c		\
+SRCS :=					ft_printf.c						\
+						ft_dprintf.c					\
+						ft_snprintf.c					\
+						ft_vdprintf.c					\
+						ft_vsnprintf.c					\
+						utils.c							\
+						wchartobuf.c					\
+						_printf.c						\
+						flags.c							\
+						length.c						\
+						precision.c						\
+						length_modifier.c				\
+						specifier.c						\
+						print_integer.c					\
+						print_float.c					\
+						print_percent.c					\
+						print_char.c					\
+						print_string.c					\
+						print_pointer.c					\
+						print_none_specifier.c			\
+						log_base_2.c					\
+						big_int.c						\
+						big_int_addition.c				\
+						big_int_multiplication.c		\
+						big_int_exponentiation.c		\
+						big_int_division.c				\
+						big_int_shift_left.c			\
+						float64_to_integer_conversion.c	\
+						dragon4_core.c					\
+						dragon4_format_positional.c		\
+						dragon4_format_scientific.c		\
+						dragon4_print_float64.c			\
+						dragon4_print_inf_nan.c			\
+					
 
 
 OBJS :=					$(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
@@ -56,22 +75,30 @@ MOCKS_DIR :=			./mocks
 MOCKS_INC :=			$(MOCKS_DIR)
 #MOCKS_SRCS :=			runtime_error_stub.c			\
 
-TEST_SRCS :=			$(UNITY_SRCS)					\
-						all_tests.c						\
-						ft_dprintf_test.c				\
-						ft_dprintf_test_runner.c		\
-						ft_snprintf_test.c				\
-						ft_snprintf_test_runner.c		\
-						print_integer_test.c			\
-						print_integer_test_runner.c		\
-						print_percent_test.c			\
-						print_percent_test_runner.c		\
-						print_char_test.c				\
-						print_char_test_runner.c		\
-						print_string_test.c				\
-						print_string_test_runner.c		\
+TEST_SRCS :=			$(UNITY_SRCS)						\
+						all_tests.c							\
+						ft_dprintf_test.c					\
+						ft_dprintf_test_runner.c			\
+						ft_snprintf_test.c					\
+						ft_snprintf_test_runner.c			\
+						print_integer_test.c				\
+						print_integer_test_runner.c			\
+						print_percent_test.c				\
+						print_percent_test_runner.c			\
+						print_char_test.c					\
+						print_char_test_runner.c			\
+						print_string_test.c					\
+						print_string_test_runner.c			\
 						print_pointer_test.c				\
-						print_pointer_test_runner.c		\
+						print_pointer_test_runner.c			\
+						dragon4_log_base_2_test.c			\
+						dragon4_log_base_2_test_runner.c	\
+						big_int_test.c						\
+						big_int_test_runner.c				\
+						dragon4_print_float64_test.c		\
+						dragon4_print_float64_test_runner.c	\
+						print_float_test.c					\
+						print_float_test_runner.c			\
 
 
 TEST_REAL_PRINTF :=		real_printf.c					\
@@ -90,8 +117,8 @@ TEST_CC_FLAGS :=		-Wall -Wextra
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT)
-	ar rucs $(NAME) $(OBJS) $(LIBFT)
+$(NAME): $(OBJS)
+	ar rucs $(NAME) $(OBJS)
 
 $(OBJS): | $(OBJ_DIR)
 
@@ -100,9 +127,6 @@ $(OBJ_DIR):
 
 $(OBJ_DIR)/%.o: %.c $(HEADERS_DEP)
 	$(CC) -c $< -o $@ $(CC_FLAGS) $(INC_FLAGS) $(LINK_FLAGS)
-
-$(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
 
 test: $(TEST_EXEC)
 	clear

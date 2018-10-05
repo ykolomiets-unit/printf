@@ -212,7 +212,6 @@ static int	print_unsigned_integer(t_printf *options, t_fms *fms, t_int_options *
 
 int			print_integer(t_printf *options, t_fms *fms)
 {
-	int				res;
 	t_int_options	int_opt;
 
 	if (fms->precision != -1)
@@ -222,5 +221,4 @@ int			print_integer(t_printf *options, t_fms *fms)
 		return (print_signed_integer(options, fms, &int_opt));
 	else
 		return (print_unsigned_integer(options, fms, &int_opt));
-	return (res);
 }
