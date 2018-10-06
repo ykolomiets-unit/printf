@@ -80,10 +80,6 @@ UNITY_FIXTURE_INC :=	$(UNITY_DIR)/extras/fixture/src
 UNITY_SRCS :=			unity.c							\
 						unity_fixture.c
 
-MOCKS_DIR :=			./mocks
-MOCKS_INC :=			$(MOCKS_DIR)
-#MOCKS_SRCS :=			runtime_error_stub.c			\
-
 TEST_SRCS :=			$(UNITY_SRCS)						\
 						all_tests.c							\
 						ft_dprintf_test.c					\
@@ -110,9 +106,9 @@ TEST_SRCS :=			$(UNITY_SRCS)						\
 						print_float_test_runner.c			\
 
 
-TEST_REAL_PRINTF :=		real_printf.c					\
+TEST_REAL_PRINTF :=		real_printf.c					    \
 
-TEST_INC_FLAGS :=		-I$(UNITY_INC) -I$(UNITY_FIXTURE_INC) -I$(MOCKS_INC)
+TEST_INC_FLAGS :=		-I$(UNITY_INC) -I$(UNITY_FIXTURE_INC)
 
 TEST_OBJS :=			$(addprefix $(TEST_OBJ_DIR)/, $(TEST_SRCS:.c=.o))
 
@@ -166,6 +162,7 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 	rm -f $(TEST_EXEC)
+	rm -rf $(TEST_PRINTF_EXEC)
 	rm -rf $(OBJ_DIR)
 	rm -rf $(TEST_OBJ_DIR)
 
@@ -173,4 +170,4 @@ re: fclean all
 
 .PHONY: all test clean fclean re
 
-vpath %.c		$(SRC_DIR) $(TEST_DIR) $(UNITY_DIR)/src $(UNITY_DIR)/extras/fixture/src	$(MOCKS_DIR)
+vpath %.c		$(SRC_DIR) $(TEST_DIR) $(UNITY_DIR)/src $(UNITY_DIR)/extras/fixture/src
