@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-int			ft_dprintf(const int fd, const char *fmt, ...)
+int			ft_dprintf(const int fd, const char *restrict fmt, ...)
 {
 	int			printed;
 	va_list		ap;

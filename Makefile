@@ -112,7 +112,7 @@ TEST_INC_FLAGS :=		-I$(UNITY_INC) -I$(UNITY_FIXTURE_INC)
 
 TEST_OBJS :=			$(addprefix $(TEST_OBJ_DIR)/, $(TEST_SRCS:.c=.o))
 
-CC :=					clang
+CC :=					gcc
 
 CC_FLAGS :=				-Wall
 CC_FLAGS +=				-Wextra

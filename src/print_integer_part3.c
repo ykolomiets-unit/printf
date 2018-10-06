@@ -36,6 +36,12 @@ int		uintmax_to_buf(uintmax_t u, int base, int capitals, char **buf)
 
 char	*get_prefix_for_int(uintmax_t u, t_fms *fms, int base, int capitals)
 {
+	if (base == 2)
+	{
+		if (u == 0 || !fms->altfmt)
+			return (0);
+		return (capitals ? "0B" : "0b");
+	}
 	if (base == 8)
 	{
 		if (!fms->altfmt)

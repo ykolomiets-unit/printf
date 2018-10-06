@@ -15,13 +15,15 @@
 
 static void		get_base_register_sign(char spec, t_int_options *opt)
 {
+	if (spec == 'b' || spec == 'B')
+		opt->base = 2;
 	if (spec == 'd' || spec == 'D' || spec == 'i' || spec == 'u' || spec == 'U')
 		opt->base = 10;
 	else if (spec == 'x' || spec == 'X')
 		opt->base = 16;
 	else if (spec == 'o' || spec == 'O')
 		opt->base = 8;
-	if (spec == 'X')
+	if (spec == 'X' || spec == 'B')
 		opt->capitals = 16;
 	else
 		opt->capitals = 0;

@@ -11,7 +11,7 @@
 
 int	main(void)
 {
-	printf("%.20f\n", 9823742742.1231231231);
-	ft_printf("%.20f\n", 9823742742.1231231231);
+	printf("%+#X\n", -128);
+	ft_printf("%+#B\n", -128);
 	return (0);
 }

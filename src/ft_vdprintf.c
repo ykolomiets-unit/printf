@@ -42,7 +42,7 @@ static int	flush_to_stream(t_printf *options)
 	return (0);
 }
 
-int			ft_vdprintf(const int fd, const char *fmt, va_list *ap)
+int			ft_vdprintf(const int fd, const char *restrict fmt, va_list *ap)
 {
 	t_printf	options;
 	int			res;

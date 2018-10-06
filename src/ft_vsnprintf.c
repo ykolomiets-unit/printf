@@ -32,7 +32,7 @@ int			ft_vsnprintf
 (
 		char *buf,
 		const int size,
-		const char *fmt,
+		const char *restrict fmt,
 		va_list *ap
 )
 {

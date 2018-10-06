@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-int			ft_snprintf(char *buf, const int size, const char *fmt, ...)
+int			ft_snprintf(char *restrict buf, const int size, const char *fmt, ...)
 {
 	int		printed;
 	va_list	ap;
