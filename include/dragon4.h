@@ -15,6 +15,7 @@
 
 # include <stdint.h>
 # include <stddef.h>
+# include "big_int.h"
 
 typedef	int			t_boolean;
 
@@ -37,6 +38,19 @@ typedef struct		s_dragon4_arg
 	uint32_t		buffer_size;
 	int32_t			*out_exponent;
 }					t_dragon4_arg;
+
+typedef struct		s_dragon4_sup
+{
+	t_big_int		scale;
+	t_big_int		scaled_value;
+	t_big_int		scaled_margin_low;
+	t_big_int		*p_scaled_margin_high;
+	t_big_int		optional_margin_high;
+	t_boolean		low;
+	t_boolean		high;
+	int32_t			digit_exponent;
+	int32_t			cutoff_exponent;
+}					t_dragon4_sup;
 
 typedef enum		e_float_format
 {
@@ -66,6 +80,11 @@ typedef struct		s_format_arg
 	int32_t			precision;
 }					t_format_arg;
 
+void				dragon4_set_start_value(t_dragon4_sup *sup,
+						t_dragon4_arg *arg);
+void				dragon4_apply_rounding(t_dragon4_sup *sup,
+						t_dragon4_arg *arg, uint32_t last_digit,
+						char **cur_digit);
 uint32_t			dragon4(t_dragon4_arg arg);
 uint32_t			log_base_2_uint32(uint32_t val);
 uint32_t			log_base_2_uint64(uint64_t val);

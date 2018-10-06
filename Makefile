@@ -24,6 +24,7 @@ SRCS :=					ft_printf.c						\
 						ft_vdprintf.c					\
 						ft_vsnprintf.c					\
 						utils.c							\
+						ceil.c							\
 						wchartobuf.c					\
 						printf_core.c					\
 						flags.c							\
@@ -53,6 +54,8 @@ SRCS :=					ft_printf.c						\
 						big_int_shift_left.c			\
 						float64_to_integer_conversion.c	\
 						dragon4_core.c					\
+						dragon4_core_start_value.c      \
+						dragon4_core_rounding.c         \
 						dragon4_format_positional.c		\
 						dragon4_format_scientific.c		\
 						dragon4_print_float64.c			\

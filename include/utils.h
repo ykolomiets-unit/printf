@@ -33,5 +33,6 @@ int		wchar_length_in_bytes(wchar_t ch);
 void	*ft_memmove(void *dest, const void *src, size_t n);
 void	*ft_memset(void *s, int c, size_t n);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
+double	my_ceil(double val);
 
 #endif

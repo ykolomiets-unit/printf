@@ -102,7 +102,7 @@ int						print_percent(t_printf *options, t_fms *fms);
 int						print_char(t_printf *options, t_fms *fms);
 int						uintmax_to_buf(uintmax_t u, int base,
 							int capitals, char **buf);
-char 					*get_prefix_for_int(uintmax_t u, t_fms *fms,
+char					*get_prefix_for_int(uintmax_t u, t_fms *fms,
 							int base, int capitals);
 int						print_num(uintmax_t u, t_printf *options,
 									t_fms *fms, t_int_options *int_opt);
